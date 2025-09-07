@@ -1,0 +1,3 @@
+/home/andrew/Desktop/new_proxy_bost/out/CMakeFiles/proxy-boost.dir
+/home/andrew/Desktop/new_proxy_bost/out/CMakeFiles/edit_cache.dir
+/home/andrew/Desktop/new_proxy_bost/out/CMakeFiles/rebuild_cache.dir
