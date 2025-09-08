@@ -1,4 +1,4 @@
-# Install script for directory: /home/andrew/Desktop/new_proxy_bost
+# Install script for directory: /home/nii_admin/Desktop/proxy/new_proxy_boost
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/andrew/Desktop/new_proxy_bost/out/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/nii_admin/Desktop/proxy/new_proxy_boost/out/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

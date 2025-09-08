@@ -54,10 +54,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/andrew/Desktop/new_proxy_bost
+CMAKE_SOURCE_DIR = /home/nii_admin/Desktop/proxy/new_proxy_boost
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/andrew/Desktop/new_proxy_bost/out
+CMAKE_BINARY_DIR = /home/nii_admin/Desktop/proxy/new_proxy_boost/out
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -81,14 +81,14 @@ clean: CMakeFiles/proxy-boost.dir/clean
 CMakeFiles/proxy-boost.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/proxy-boost.dir/build.make CMakeFiles/proxy-boost.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/proxy-boost.dir/build.make CMakeFiles/proxy-boost.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/andrew/Desktop/new_proxy_bost/out/CMakeFiles --progress-num=1,2,3,4,5 "Built target proxy-boost"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/nii_admin/Desktop/proxy/new_proxy_boost/out/CMakeFiles --progress-num=1,2,3,4,5 "Built target proxy-boost"
 .PHONY : CMakeFiles/proxy-boost.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/proxy-boost.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrew/Desktop/new_proxy_bost/out/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/nii_admin/Desktop/proxy/new_proxy_boost/out/CMakeFiles 5
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/proxy-boost.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrew/Desktop/new_proxy_bost/out/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/nii_admin/Desktop/proxy/new_proxy_boost/out/CMakeFiles 0
 .PHONY : CMakeFiles/proxy-boost.dir/rule
 
 # Convenience name for target.

@@ -1,5 +1,5 @@
 CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
- /home/andrew/Desktop/new_proxy_bost/src/device_handler.cpp \
+ /home/nii_admin/Desktop/proxy/new_proxy_boost/src/device_handler.cpp \
  /usr/include/stdc-predef.h /usr/include/boost/asio/buffer.hpp \
  /usr/include/boost/asio/detail/config.hpp /usr/include/boost/config.hpp \
  /usr/include/boost/config/user.hpp \
@@ -905,7 +905,7 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/asio/read.hpp /usr/include/boost/asio/impl/read.hpp \
  /usr/include/boost/asio/connect.hpp \
  /usr/include/boost/asio/impl/connect.hpp \
- /home/andrew/Desktop/new_proxy_bost/include/device_handler.h \
+ /home/nii_admin/Desktop/proxy/new_proxy_boost/include/device_handler.h \
  /usr/include/boost/system/error_code.hpp /usr/include/c++/13/queue \
  /usr/include/c++/13/deque /usr/include/c++/13/bits/stl_deque.h \
  /usr/include/c++/13/bits/deque.tcc /usr/include/c++/13/bits/stl_queue.h \

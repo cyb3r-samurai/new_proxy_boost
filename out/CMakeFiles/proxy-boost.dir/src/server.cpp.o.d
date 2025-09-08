@@ -1,8 +1,8 @@
 CMakeFiles/proxy-boost.dir/src/server.cpp.o: \
- /home/andrew/Desktop/new_proxy_bost/src/server.cpp \
+ /home/nii_admin/Desktop/proxy/new_proxy_boost/src/server.cpp \
  /usr/include/stdc-predef.h \
- /home/andrew/Desktop/new_proxy_bost/include/client_session.h \
- /home/andrew/Desktop/new_proxy_bost/include/device_handler.h \
+ /home/nii_admin/Desktop/proxy/new_proxy_boost/include/client_session.h \
+ /home/nii_admin/Desktop/proxy/new_proxy_boost/include/device_handler.h \
  /usr/include/boost/asio/steady_timer.hpp \
  /usr/include/boost/asio/detail/config.hpp /usr/include/boost/config.hpp \
  /usr/include/boost/config/user.hpp \
@@ -904,6 +904,6 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: \
  /usr/include/c++/13/iostream /usr/include/c++/13/numeric \
  /usr/include/c++/13/bits/stl_numeric.h \
  /usr/include/c++/13/pstl/glue_numeric_defs.h \
- /home/andrew/Desktop/new_proxy_bost/include/server.h \
+ /home/nii_admin/Desktop/proxy/new_proxy_boost/include/server.h \
  /usr/include/c++/13/unordered_set \
  /usr/include/c++/13/bits/unordered_set.h

@@ -11,6 +11,7 @@
 #include <memory>
 #include <iostream>
 
+#include <vector>
 class ClientSession : std::enable_shared_from_this<ClientSession> {
 public:
     static std::shared_ptr<ClientSession> start (boost::asio::ip::tcp::socket  client_sock,
@@ -33,10 +34,10 @@ private:
             std::shared_ptr<DeviceHandler> device_handler);
     void read_header(std::shared_ptr<ClientSession> self);
     void read_body(std::shared_ptr<ClientSession> self, uint16_t pdu_len, std::shared_ptr<std::array<uint8_t, 6>>header_);
-    void send_to_client(std::shared_ptr<ClientSession> self,std::array<uint8_t, 256>& response);
+    void send_to_client(std::shared_ptr<ClientSession> self,std::vector<uint8_t>& response);
     void handle_error(boost::system::error_code ec);
     void read_full_message(std::shared_ptr<ClientSession> self);
-    void calculate_request_count(std::shared_ptr<ClientSession> self, std::shared_ptr<std::array<uint8_t, 1100>>, size_t bytes_readed);
+    void calculate_request_count(std::shared_ptr<ClientSession> self, std::shared_ptr<std::vector<uint8_t>>, size_t bytes_readed);
     
     std::function<void()> cleanup_cb;
 

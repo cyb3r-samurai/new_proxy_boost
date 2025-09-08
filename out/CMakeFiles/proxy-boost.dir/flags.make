@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
 
-CXX_INCLUDES = -I/home/andrew/Desktop/new_proxy_bost/include
+CXX_INCLUDES = -I/home/nii_admin/Desktop/proxy/new_proxy_boost/include
 
 CXX_FLAGS = 
 

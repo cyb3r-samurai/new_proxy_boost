@@ -11,7 +11,7 @@ int  main () {
     boost::asio::io_context ctx; 
     
     boost::asio::ip::tcp::endpoint device_endpoint(
-        boost::asio::ip::make_address("192.168.220.213"), 502
+        boost::asio::ip::make_address("192.168.1.10"), 502
     );
 
     auto device_handler = DeviceHandler::create(ctx, device_endpoint);

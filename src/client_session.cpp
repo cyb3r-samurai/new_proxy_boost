@@ -33,7 +33,8 @@ void ClientSession::read_header(std::shared_ptr<ClientSession> self) {
 void ClientSession::read_full_message(std::shared_ptr<ClientSession> self) {
     std::cout << "read_full_message_called";
     
-    auto message_ = std::make_shared<std::array<uint8_t , 1100>>();
+    auto message_ = std::make_shared<std::vector<uint8_t>>();
+    message_->resize(1100);
     client_sock_.async_read_some(boost::asio::buffer(*message_),
             [this, self, message_](boost::system::error_code ec, size_t bytes_read ){
 
@@ -48,24 +49,33 @@ void ClientSession::read_full_message(std::shared_ptr<ClientSession> self) {
 }
 
 void ClientSession::calculate_request_count(std::shared_ptr<ClientSession> self,
-        std::shared_ptr<std::array<uint8_t, 1100>> message, size_t bytes_readed) {
-        uint16_t bytes_reaminning = 100;
-        uint8_t request_count = 0;
+        std::shared_ptr<std::vector<uint8_t>> message, size_t bytes_readed) {
+	std::cout << bytes_readed << std::endl;
+        uint16_t bytes_reaminning = bytes_readed;
+        uint16_t request_count = 0;
         auto lamda = [](std::array<uint8_t, 6> header)  -> uint16_t{
             return static_cast<uint16_t>(header[4] << 8 | header[5]);
         };  
-        uint16_t current_index;
+        uint16_t current_index = 0;
         while (bytes_reaminning > 0) {
             std::array<uint8_t, 6> header;
             std::copy(message->begin() + current_index, message->begin() + current_index + 6,
                         header.begin());
             uint16_t pdu_len  = lamda(header);
+//	    std::cout << pdu_len <<std::endl;
             request_count++;
             current_index = current_index + pdu_len + 6;
             bytes_reaminning = bytes_reaminning - pdu_len - 6;
+	    std::cout << "one request readed";
         }
+	message->resize(bytes_readed);
+	std::cout << "we in ready to send push_request";
         std::cout << bytes_reaminning << " " << request_count<< std::endl;
-        read_full_message(self);
+	std::cout << "we in ready to send push_request";
+	device_handler_->push_reqest(request_count, *message,
+			[this,self](std::vector<uint8_t> recponse) {
+				send_to_client(self, recponse);
+			});
 }
 
 void ClientSession::read_body(std::shared_ptr<ClientSession>self, uint16_t pdu_len, std::shared_ptr<std::array<uint8_t, 6>>header_) {
@@ -85,21 +95,26 @@ void ClientSession::read_body(std::shared_ptr<ClientSession>self, uint16_t pdu_l
                             if(response.empty()) {
                                 client_sock_.close();
                             } else {
-                                send_to_client(self, response);
-                                read_header(self);
+                           //     send_to_client(self, response);
                             }
                         });
 
             });
 }
 
-void ClientSession::send_to_client(std::shared_ptr<ClientSession> self, std::array<uint8_t, 256>& response) {
-    const uint16_t pdu_len = (response[4] << 8) | response[5];
-    const size_t total_size = 6 + pdu_len;
+void ClientSession::send_to_client(std::shared_ptr<ClientSession> self, std::vector<uint8_t>& response) {
+	std::cerr << "we in send to client" << std::endl;
+	std::cerr << response.size() << std::endl;
+    //const uint16_t pdu_len = (response[4] << 8) | response[5];
+    //const size_t total_size = 6 + pdu_len;
+    //
+	boost::asio::ip::tcp::endpoint remote_ep = client_sock_.remote_endpoint();
+	std::cerr<< std::endl << "port " << (unsigned short)remote_ep.port() << std::endl;
 
-    boost::asio::async_write(client_sock_, boost::asio::buffer(response.data(), total_size),
+
+    boost::asio::async_write(client_sock_, boost::asio::buffer(response),
         [this, self](boost::system::error_code ec, size_t){
-            if (!ec) read_header(self);
+            if (!ec) read_full_message(self);
         });
 }
 

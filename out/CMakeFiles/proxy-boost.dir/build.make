@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/andrew/Desktop/new_proxy_bost
+CMAKE_SOURCE_DIR = /home/nii_admin/Desktop/proxy/new_proxy_boost
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/andrew/Desktop/new_proxy_bost/out
+CMAKE_BINARY_DIR = /home/nii_admin/Desktop/proxy/new_proxy_boost/out
 
 # Include any dependencies generated for this target.
 include CMakeFiles/proxy-boost.dir/depend.make
@@ -70,60 +70,60 @@ include CMakeFiles/proxy-boost.dir/progress.make
 include CMakeFiles/proxy-boost.dir/flags.make
 
 CMakeFiles/proxy-boost.dir/src/main.cpp.o: CMakeFiles/proxy-boost.dir/flags.make
-CMakeFiles/proxy-boost.dir/src/main.cpp.o: /home/andrew/Desktop/new_proxy_bost/src/main.cpp
+CMakeFiles/proxy-boost.dir/src/main.cpp.o: /home/nii_admin/Desktop/proxy/new_proxy_boost/src/main.cpp
 CMakeFiles/proxy-boost.dir/src/main.cpp.o: CMakeFiles/proxy-boost.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/andrew/Desktop/new_proxy_bost/out/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/proxy-boost.dir/src/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proxy-boost.dir/src/main.cpp.o -MF CMakeFiles/proxy-boost.dir/src/main.cpp.o.d -o CMakeFiles/proxy-boost.dir/src/main.cpp.o -c /home/andrew/Desktop/new_proxy_bost/src/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/nii_admin/Desktop/proxy/new_proxy_boost/out/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/proxy-boost.dir/src/main.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proxy-boost.dir/src/main.cpp.o -MF CMakeFiles/proxy-boost.dir/src/main.cpp.o.d -o CMakeFiles/proxy-boost.dir/src/main.cpp.o -c /home/nii_admin/Desktop/proxy/new_proxy_boost/src/main.cpp
 
 CMakeFiles/proxy-boost.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/proxy-boost.dir/src/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andrew/Desktop/new_proxy_bost/src/main.cpp > CMakeFiles/proxy-boost.dir/src/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nii_admin/Desktop/proxy/new_proxy_boost/src/main.cpp > CMakeFiles/proxy-boost.dir/src/main.cpp.i
 
 CMakeFiles/proxy-boost.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/proxy-boost.dir/src/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrew/Desktop/new_proxy_bost/src/main.cpp -o CMakeFiles/proxy-boost.dir/src/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nii_admin/Desktop/proxy/new_proxy_boost/src/main.cpp -o CMakeFiles/proxy-boost.dir/src/main.cpp.s
 
 CMakeFiles/proxy-boost.dir/src/server.cpp.o: CMakeFiles/proxy-boost.dir/flags.make
-CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/new_proxy_bost/src/server.cpp
+CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/nii_admin/Desktop/proxy/new_proxy_boost/src/server.cpp
 CMakeFiles/proxy-boost.dir/src/server.cpp.o: CMakeFiles/proxy-boost.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/andrew/Desktop/new_proxy_bost/out/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/proxy-boost.dir/src/server.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proxy-boost.dir/src/server.cpp.o -MF CMakeFiles/proxy-boost.dir/src/server.cpp.o.d -o CMakeFiles/proxy-boost.dir/src/server.cpp.o -c /home/andrew/Desktop/new_proxy_bost/src/server.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/nii_admin/Desktop/proxy/new_proxy_boost/out/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/proxy-boost.dir/src/server.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proxy-boost.dir/src/server.cpp.o -MF CMakeFiles/proxy-boost.dir/src/server.cpp.o.d -o CMakeFiles/proxy-boost.dir/src/server.cpp.o -c /home/nii_admin/Desktop/proxy/new_proxy_boost/src/server.cpp
 
 CMakeFiles/proxy-boost.dir/src/server.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/proxy-boost.dir/src/server.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andrew/Desktop/new_proxy_bost/src/server.cpp > CMakeFiles/proxy-boost.dir/src/server.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nii_admin/Desktop/proxy/new_proxy_boost/src/server.cpp > CMakeFiles/proxy-boost.dir/src/server.cpp.i
 
 CMakeFiles/proxy-boost.dir/src/server.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/proxy-boost.dir/src/server.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrew/Desktop/new_proxy_bost/src/server.cpp -o CMakeFiles/proxy-boost.dir/src/server.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nii_admin/Desktop/proxy/new_proxy_boost/src/server.cpp -o CMakeFiles/proxy-boost.dir/src/server.cpp.s
 
 CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: CMakeFiles/proxy-boost.dir/flags.make
-CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: /home/andrew/Desktop/new_proxy_bost/src/device_handler.cpp
+CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: /home/nii_admin/Desktop/proxy/new_proxy_boost/src/device_handler.cpp
 CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: CMakeFiles/proxy-boost.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/andrew/Desktop/new_proxy_bost/out/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o -MF CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o.d -o CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o -c /home/andrew/Desktop/new_proxy_bost/src/device_handler.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/nii_admin/Desktop/proxy/new_proxy_boost/out/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o -MF CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o.d -o CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o -c /home/nii_admin/Desktop/proxy/new_proxy_boost/src/device_handler.cpp
 
 CMakeFiles/proxy-boost.dir/src/device_handler.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/proxy-boost.dir/src/device_handler.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andrew/Desktop/new_proxy_bost/src/device_handler.cpp > CMakeFiles/proxy-boost.dir/src/device_handler.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nii_admin/Desktop/proxy/new_proxy_boost/src/device_handler.cpp > CMakeFiles/proxy-boost.dir/src/device_handler.cpp.i
 
 CMakeFiles/proxy-boost.dir/src/device_handler.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/proxy-boost.dir/src/device_handler.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrew/Desktop/new_proxy_bost/src/device_handler.cpp -o CMakeFiles/proxy-boost.dir/src/device_handler.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nii_admin/Desktop/proxy/new_proxy_boost/src/device_handler.cpp -o CMakeFiles/proxy-boost.dir/src/device_handler.cpp.s
 
 CMakeFiles/proxy-boost.dir/src/client_session.cpp.o: CMakeFiles/proxy-boost.dir/flags.make
-CMakeFiles/proxy-boost.dir/src/client_session.cpp.o: /home/andrew/Desktop/new_proxy_bost/src/client_session.cpp
+CMakeFiles/proxy-boost.dir/src/client_session.cpp.o: /home/nii_admin/Desktop/proxy/new_proxy_boost/src/client_session.cpp
 CMakeFiles/proxy-boost.dir/src/client_session.cpp.o: CMakeFiles/proxy-boost.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/andrew/Desktop/new_proxy_bost/out/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/proxy-boost.dir/src/client_session.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proxy-boost.dir/src/client_session.cpp.o -MF CMakeFiles/proxy-boost.dir/src/client_session.cpp.o.d -o CMakeFiles/proxy-boost.dir/src/client_session.cpp.o -c /home/andrew/Desktop/new_proxy_bost/src/client_session.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/nii_admin/Desktop/proxy/new_proxy_boost/out/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/proxy-boost.dir/src/client_session.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proxy-boost.dir/src/client_session.cpp.o -MF CMakeFiles/proxy-boost.dir/src/client_session.cpp.o.d -o CMakeFiles/proxy-boost.dir/src/client_session.cpp.o -c /home/nii_admin/Desktop/proxy/new_proxy_boost/src/client_session.cpp
 
 CMakeFiles/proxy-boost.dir/src/client_session.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/proxy-boost.dir/src/client_session.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andrew/Desktop/new_proxy_bost/src/client_session.cpp > CMakeFiles/proxy-boost.dir/src/client_session.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nii_admin/Desktop/proxy/new_proxy_boost/src/client_session.cpp > CMakeFiles/proxy-boost.dir/src/client_session.cpp.i
 
 CMakeFiles/proxy-boost.dir/src/client_session.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/proxy-boost.dir/src/client_session.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andrew/Desktop/new_proxy_bost/src/client_session.cpp -o CMakeFiles/proxy-boost.dir/src/client_session.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nii_admin/Desktop/proxy/new_proxy_boost/src/client_session.cpp -o CMakeFiles/proxy-boost.dir/src/client_session.cpp.s
 
 # Object files for target proxy-boost
 proxy__boost_OBJECTS = \
@@ -142,7 +142,7 @@ proxy-boost: CMakeFiles/proxy-boost.dir/src/client_session.cpp.o
 proxy-boost: CMakeFiles/proxy-boost.dir/build.make
 proxy-boost: /usr/lib/x86_64-linux-gnu/libboost_system.so.1.83.0
 proxy-boost: CMakeFiles/proxy-boost.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/andrew/Desktop/new_proxy_bost/out/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable proxy-boost"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/nii_admin/Desktop/proxy/new_proxy_boost/out/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable proxy-boost"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/proxy-boost.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -154,6 +154,6 @@ CMakeFiles/proxy-boost.dir/clean:
 .PHONY : CMakeFiles/proxy-boost.dir/clean
 
 CMakeFiles/proxy-boost.dir/depend:
-	cd /home/andrew/Desktop/new_proxy_bost/out && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/andrew/Desktop/new_proxy_bost /home/andrew/Desktop/new_proxy_bost /home/andrew/Desktop/new_proxy_bost/out /home/andrew/Desktop/new_proxy_bost/out /home/andrew/Desktop/new_proxy_bost/out/CMakeFiles/proxy-boost.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/nii_admin/Desktop/proxy/new_proxy_boost/out && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/nii_admin/Desktop/proxy/new_proxy_boost /home/nii_admin/Desktop/proxy/new_proxy_boost /home/nii_admin/Desktop/proxy/new_proxy_boost/out /home/nii_admin/Desktop/proxy/new_proxy_boost/out /home/nii_admin/Desktop/proxy/new_proxy_boost/out/CMakeFiles/proxy-boost.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/proxy-boost.dir/depend
 

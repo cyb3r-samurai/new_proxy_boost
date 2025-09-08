@@ -8,10 +8,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/andrew/Desktop/new_proxy_bost/src/client_session.cpp" "CMakeFiles/proxy-boost.dir/src/client_session.cpp.o" "gcc" "CMakeFiles/proxy-boost.dir/src/client_session.cpp.o.d"
-  "/home/andrew/Desktop/new_proxy_bost/src/device_handler.cpp" "CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o" "gcc" "CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o.d"
-  "/home/andrew/Desktop/new_proxy_bost/src/main.cpp" "CMakeFiles/proxy-boost.dir/src/main.cpp.o" "gcc" "CMakeFiles/proxy-boost.dir/src/main.cpp.o.d"
-  "/home/andrew/Desktop/new_proxy_bost/src/server.cpp" "CMakeFiles/proxy-boost.dir/src/server.cpp.o" "gcc" "CMakeFiles/proxy-boost.dir/src/server.cpp.o.d"
+  "/home/nii_admin/Desktop/proxy/new_proxy_boost/src/client_session.cpp" "CMakeFiles/proxy-boost.dir/src/client_session.cpp.o" "gcc" "CMakeFiles/proxy-boost.dir/src/client_session.cpp.o.d"
+  "/home/nii_admin/Desktop/proxy/new_proxy_boost/src/device_handler.cpp" "CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o" "gcc" "CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o.d"
+  "/home/nii_admin/Desktop/proxy/new_proxy_boost/src/main.cpp" "CMakeFiles/proxy-boost.dir/src/main.cpp.o" "gcc" "CMakeFiles/proxy-boost.dir/src/main.cpp.o.d"
+  "/home/nii_admin/Desktop/proxy/new_proxy_boost/src/server.cpp" "CMakeFiles/proxy-boost.dir/src/server.cpp.o" "gcc" "CMakeFiles/proxy-boost.dir/src/server.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

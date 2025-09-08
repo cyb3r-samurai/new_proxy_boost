@@ -1,5 +1,5 @@
 CMakeFiles/proxy-boost.dir/src/client_session.cpp.o: \
- /home/andrew/Desktop/new_proxy_bost/src/client_session.cpp \
+ /home/nii_admin/Desktop/proxy/new_proxy_boost/src/client_session.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/13/array \
  /usr/include/c++/13/compare /usr/include/c++/13/initializer_list \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
@@ -386,8 +386,8 @@ CMakeFiles/proxy-boost.dir/src/client_session.cpp.o: \
  /usr/include/boost/asio/detail/non_const_lvalue.hpp \
  /usr/include/boost/asio/detail/throw_error.hpp \
  /usr/include/boost/asio/detail/impl/throw_error.ipp \
- /home/andrew/Desktop/new_proxy_bost/include/client_session.h \
- /home/andrew/Desktop/new_proxy_bost/include/device_handler.h \
+ /home/nii_admin/Desktop/proxy/new_proxy_boost/include/client_session.h \
+ /home/nii_admin/Desktop/proxy/new_proxy_boost/include/device_handler.h \
  /usr/include/boost/asio/steady_timer.hpp \
  /usr/include/boost/asio/basic_waitable_timer.hpp \
  /usr/include/boost/asio/any_io_executor.hpp \

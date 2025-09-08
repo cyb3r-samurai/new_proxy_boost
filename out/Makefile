@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/andrew/Desktop/new_proxy_bost
+CMAKE_SOURCE_DIR = /home/nii_admin/Desktop/proxy/new_proxy_boost
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/andrew/Desktop/new_proxy_bost/out
+CMAKE_BINARY_DIR = /home/nii_admin/Desktop/proxy/new_proxy_boost/out
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrew/Desktop/new_proxy_bost/out/CMakeFiles /home/andrew/Desktop/new_proxy_bost/out//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/nii_admin/Desktop/proxy/new_proxy_boost/out/CMakeFiles /home/nii_admin/Desktop/proxy/new_proxy_boost/out//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrew/Desktop/new_proxy_bost/out/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/nii_admin/Desktop/proxy/new_proxy_boost/out/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

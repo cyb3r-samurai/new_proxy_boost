@@ -29,6 +29,9 @@ public:
     void enqueue_request(TransactionId tid,
                         std::vector<uint8_t> request,
                         std::function<void(std::array<uint8_t, 256>)>callback);
+void push_reqest(uint16_t request_count, std::vector<uint8_t>
+		request, std::function<void(std::vector<uint8_t>)>callback);
+    
 
 private:
     DeviceHandler(boost::asio::io_context& ctx,
@@ -40,6 +43,7 @@ private:
     };
     const size_t max_depth = 3;
     size_t depth = 0;
+//    uint16_t i = 0;
     
     
     void connect_to_device();
@@ -51,8 +55,9 @@ private:
             std::shared_ptr<std::array<uint8_t, 6>>header_buf);
     void handle_device_error(boost::system::error_code ec);
     void retry_connection();
-    void handle_request_error(TransactionId tid, boost::system::error_code ec);
+    void handle_request_error( boost::system::error_code ec);
     
+//    std::function<void()>read_next;
     boost::asio::strand<boost::asio::io_context::executor_type> strand_;
     boost::asio::io_context& ctx_;
     boost::asio::ip::tcp::endpoint device_endpoint_;

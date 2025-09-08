@@ -1,5 +1,5 @@
 CMakeFiles/proxy-boost.dir/src/main.cpp.o: \
- /home/andrew/Desktop/new_proxy_bost/src/main.cpp \
+ /home/nii_admin/Desktop/proxy/new_proxy_boost/src/main.cpp \
  /usr/include/stdc-predef.h /usr/include/boost/asio/io_context.hpp \
  /usr/include/boost/asio/detail/config.hpp /usr/include/boost/config.hpp \
  /usr/include/boost/config/user.hpp \
@@ -530,7 +530,7 @@ CMakeFiles/proxy-boost.dir/src/main.cpp.o: \
  /usr/include/boost/asio/ip/bad_address_cast.hpp \
  /usr/include/boost/asio/ip/impl/address.hpp \
  /usr/include/boost/asio/ip/impl/address.ipp \
- /home/andrew/Desktop/new_proxy_bost/include/device_handler.h \
+ /home/nii_admin/Desktop/proxy/new_proxy_boost/include/device_handler.h \
  /usr/include/boost/asio/steady_timer.hpp \
  /usr/include/boost/asio/basic_waitable_timer.hpp \
  /usr/include/boost/asio/any_io_executor.hpp \
@@ -901,9 +901,9 @@ CMakeFiles/proxy-boost.dir/src/main.cpp.o: \
  /usr/include/boost/asio/detail/strand_service.hpp \
  /usr/include/boost/asio/detail/impl/strand_service.hpp \
  /usr/include/boost/asio/detail/impl/strand_service.ipp \
- /home/andrew/Desktop/new_proxy_bost/include/client_session.h \
+ /home/nii_admin/Desktop/proxy/new_proxy_boost/include/client_session.h \
  /usr/include/c++/13/iostream \
- /home/andrew/Desktop/new_proxy_bost/include/server.h \
+ /home/nii_admin/Desktop/proxy/new_proxy_boost/include/server.h \
  /usr/include/c++/13/unordered_set \
  /usr/include/c++/13/bits/unordered_set.h /usr/include/c++/13/thread \
  /usr/include/c++/13/bits/std_thread.h \
