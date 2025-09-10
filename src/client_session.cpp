@@ -13,22 +13,7 @@ ClientSession::ClientSession(boost::asio::ip::tcp::socket clien_sock,
             ,  device_handler_(device_handler) {}
 
 
-void ClientSession::read_header(std::shared_ptr<ClientSession> self) {
-	std::cout << "read header called " << std::endl;
-    auto header_ = std::make_shared<std::array<uint8_t, 6>>();
-    client_sock_.async_read_some(boost::asio::buffer(*header_), 
-            [this, self, header_](boost::system::error_code ec, size_t bytes_read) {
-                if(ec || bytes_read < 6) {
-                    handle_error(ec);
-                    return;
-                }
 
-                tid = (header_->at(0) << 8) | header_->at(1);
-                const uint16_t pdu_len = (header_->at(4) << 8) | header_->at(5);
-
-                read_body(self, pdu_len, header_);
-            });
-}
 
 void ClientSession::read_full_message(std::shared_ptr<ClientSession> self) {
     std::cout << "read_full_message_called";
@@ -78,29 +63,6 @@ void ClientSession::calculate_request_count(std::shared_ptr<ClientSession> self,
 			});
 }
 
-void ClientSession::read_body(std::shared_ptr<ClientSession>self, uint16_t pdu_len, std::shared_ptr<std::array<uint8_t, 6>>header_) {
-    auto request_buf = std::make_shared<std::vector<uint8_t>>(pdu_len + 6);
-
-    std::copy(header_->begin(), header_->end(), request_buf->begin());
-
-    client_sock_.async_read_some(boost::asio::buffer(request_buf->data() + 6 , pdu_len),
-            [this, self, request_buf](boost::system::error_code ec, size_t bytes_read) { 
-                if (ec){
-                    handle_error(ec);
-                    return;
-                }
-		std::cout << "client message readed " << std::endl;
-                device_handler_->enqueue_request(tid, *request_buf, 
-                        [this, self](std::array<uint8_t, 256> response){
-                            if(response.empty()) {
-                                client_sock_.close();
-                            } else {
-                           //     send_to_client(self, response);
-                            }
-                        });
-
-            });
-}
 
 void ClientSession::send_to_client(std::shared_ptr<ClientSession> self, std::vector<uint8_t>& response) {
 	std::cerr << "we in send to client" << std::endl;

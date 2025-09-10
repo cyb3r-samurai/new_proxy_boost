@@ -32,8 +32,6 @@ public:
 private:
     ClientSession(boost::asio::ip::tcp::socket client_sock, 
             std::shared_ptr<DeviceHandler> device_handler);
-    void read_header(std::shared_ptr<ClientSession> self);
-    void read_body(std::shared_ptr<ClientSession> self, uint16_t pdu_len, std::shared_ptr<std::array<uint8_t, 6>>header_);
     void send_to_client(std::shared_ptr<ClientSession> self,std::vector<uint8_t>& response);
     void handle_error(boost::system::error_code ec);
     void read_full_message(std::shared_ptr<ClientSession> self);

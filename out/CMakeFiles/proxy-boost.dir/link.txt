@@ -1,1 +1,0 @@
-/usr/bin/c++ "CMakeFiles/proxy-boost.dir/src/main.cpp.o" "CMakeFiles/proxy-boost.dir/src/server.cpp.o" "CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o" "CMakeFiles/proxy-boost.dir/src/client_session.cpp.o" -o proxy-boost  /usr/lib/x86_64-linux-gnu/libboost_system.so.1.83.0 

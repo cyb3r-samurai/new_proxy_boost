@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <unordered_map>
 #include <queue>
+#include <mutex>
 #include <functional>
 #include <memory>
 #include <array>
@@ -37,25 +38,24 @@ private:
     DeviceHandler(boost::asio::io_context& ctx,
                  const boost::asio::ip::tcp::endpoint& device_endpoint);
     struct Request {
-        TransactionId tid;
         std::vector<uint8_t> data;
-        std::function<void(std::array<uint8_t, 256>)> callback;
+        std::function<void(std::vector<uint8_t>)> callback;
+	uint16_t request_count;
     };
     const size_t max_depth = 3;
     size_t depth = 0;
 //    uint16_t i = 0;
     
     
+    void async_write_read(uint16_t request_count, const std::vector<uint8_t>& data, std::function<void(std::vector<uint8_t>)>callback);
+    void async_read_n_responses(uint16_t request_count, std::function<void(std::vector<uint8_t>)>callback);
     void connect_to_device();
     void process_next_request();
-    void start_request(const Request& request);
     void try_send_request();
-    void read_device_response_header(TransactionId tid);
-    void read_response_body(TransactionId tid, uint16_t pdu_len,
-            std::shared_ptr<std::array<uint8_t, 6>>header_buf);
     void handle_device_error(boost::system::error_code ec);
     void retry_connection();
     void handle_request_error( boost::system::error_code ec);
+    void finish_processing();
     
 //    std::function<void()>read_next;
     boost::asio::strand<boost::asio::io_context::executor_type> strand_;
@@ -64,10 +64,9 @@ private:
     boost::asio::ip::tcp::socket device_socket_;
     boost::asio::steady_timer timer_;
     bool is_connected_ = false;
+
+
     bool is_processing_ = false;
-
-
+    std::mutex queue_mutex_;
     std::queue<Request> request_queue_;
-    std::array<uint8_t, 6> response_header_;
-    std::unordered_map<TransactionId, Request> pending_responses_;
 };

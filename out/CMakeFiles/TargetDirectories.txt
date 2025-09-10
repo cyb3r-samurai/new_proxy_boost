@@ -1,3 +1,0 @@
-/home/nii_admin/Desktop/proxy/new_proxy_boost/out/CMakeFiles/proxy-boost.dir
-/home/nii_admin/Desktop/proxy/new_proxy_boost/out/CMakeFiles/edit_cache.dir
-/home/nii_admin/Desktop/proxy/new_proxy_boost/out/CMakeFiles/rebuild_cache.dir
