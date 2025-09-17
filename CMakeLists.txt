@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(modbus-proxy-boost LANGUAGES CXX)
 
-find_package(Boost 1.70 REQUIRED COMPONENTS system thread program_options)
+find_package(Boost 1.70 REQUIRED COMPONENTS system thread program_options filesystem)
 
 include_directories (
     ${PROJECT_SOURCE_DIR}/include
@@ -13,6 +13,7 @@ target_link_libraries(proxy-boost PRIVATE
     Boost::boost #header only asio 
     Boost::system # required for error handling
     Boost::program_options
+    Boost::filesystem
 )
 
 target_compile_features(proxy-boost PRIVATE cxx_std_17)

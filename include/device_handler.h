@@ -2,6 +2,7 @@
 
 #include <boost/asio/steady_timer.hpp>
 #include <boost/system//error_code.hpp>
+#include <boost/system/detail/error_code.hpp>
 #include <cstdint>
 #include <unordered_map>
 #include <queue>
@@ -31,7 +32,7 @@ public:
                         std::vector<uint8_t> request,
                         std::function<void(std::array<uint8_t, 256>)>callback);
 void push_reqest(uint16_t request_count, std::vector<uint8_t>
-		request, std::function<void(std::vector<uint8_t>)>callback);
+		request, std::function<void(boost::system::error_code,std::vector<uint8_t>)>callback);
     
 
 private:
@@ -39,7 +40,7 @@ private:
                  const boost::asio::ip::tcp::endpoint& device_endpoint);
     struct Request {
         std::vector<uint8_t> data;
-        std::function<void(std::vector<uint8_t>)> callback;
+        std::function<void(boost::system::error_code, std::vector<uint8_t>)> callback;
 	uint16_t request_count;
     };
     const size_t max_depth = 3;
@@ -47,8 +48,10 @@ private:
 //    uint16_t i = 0;
     
     
-    void async_write_read(uint16_t request_count, const std::vector<uint8_t>& data, std::function<void(std::vector<uint8_t>)>callback);
-    void async_read_n_responses(uint16_t request_count, std::function<void(std::vector<uint8_t>)>callback);
+    void async_write_read(uint16_t request_count, const std::vector<uint8_t>& data, std::function<void(boost::system::error_code,
+                std::vector<uint8_t>)>callback);
+    void async_read_n_responses(uint16_t request_count, std::function<void(boost::system::error_code,
+                std::vector<uint8_t>)>callback);
     void connect_to_device();
     void process_next_request();
     void try_send_request();

@@ -35,32 +35,34 @@ void ClientSession::read_full_message(std::shared_ptr<ClientSession> self) {
 
 void ClientSession::calculate_request_count(std::shared_ptr<ClientSession> self,
         std::shared_ptr<std::vector<uint8_t>> message, size_t bytes_readed) {
-	std::cout << bytes_readed << std::endl;
-        uint16_t bytes_reaminning = bytes_readed;
-        uint16_t request_count = 0;
-        auto lamda = [](std::array<uint8_t, 6> header)  -> uint16_t{
-            return static_cast<uint16_t>(header[4] << 8 | header[5]);
-        };  
-        uint16_t current_index = 0;
-        while (bytes_reaminning > 0) {
-            std::array<uint8_t, 6> header;
-            std::copy(message->begin() + current_index, message->begin() + current_index + 6,
-                        header.begin());
-            uint16_t pdu_len  = lamda(header);
-//	    std::cout << pdu_len <<std::endl;
-            request_count++;
-            current_index = current_index + pdu_len + 6;
-            bytes_reaminning = bytes_reaminning - pdu_len - 6;
-	    std::cout << "one request readed";
-        }
-	message->resize(bytes_readed);
-	std::cout << "we in ready to send push_request";
-        std::cout << bytes_reaminning << " " << request_count<< std::endl;
-	std::cout << "we in ready to send push_request";
-	device_handler_->push_reqest(request_count, *message,
-			[this,self](std::vector<uint8_t> recponse) {
-				send_to_client(self, recponse);
-			});
+//	std::cout << bytes_readed << std::endl;
+    uint16_t bytes_reaminning = bytes_readed;
+    uint16_t request_count = 0;
+    auto lamda = [](std::array<uint8_t, 6> header)  -> uint16_t{
+        return static_cast<uint16_t>(header[4] << 8 | header[5]);
+    };  
+    uint16_t current_index = 0;
+    while (bytes_reaminning > 0) {
+        std::array<uint8_t, 6> header;
+        std::copy(message->begin() + current_index, message->begin() + current_index + 6,
+                header.begin());
+        uint16_t pdu_len  = lamda(header);
+        //	    std::cout << pdu_len <<std::endl;
+        request_count++;
+        current_index = current_index + pdu_len + 6;
+        bytes_reaminning = bytes_reaminning - pdu_len - 6;
+        std::cout << "one request readed";
+    }
+    message->resize(bytes_readed);
+    std::cout << "we in ready to send push_request";
+    std::cout << bytes_reaminning << " " << request_count<< std::endl;
+    std::cout << "we in ready to send push_request";
+    device_handler_->push_reqest(request_count, *message,
+            [this,self](boost::system::error_code ec, std::vector<uint8_t> recponse) {
+                if (!ec) {
+                    send_to_client(self, recponse);
+            }
+    });
 }
 
 

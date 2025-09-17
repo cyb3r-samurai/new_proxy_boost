@@ -1,56 +1,120 @@
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/address.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/program_options.hpp>
 #include <boost/program_options/detail/parsers.hpp>
 #include <boost/program_options/option.hpp>
 #include <boost/program_options/options_description.hpp>
+#include <boost/program_options/parsers.hpp>
 #include <boost/program_options/variables_map.hpp>
+#include <boost/filesystem.hpp>
 #include <device_handler.h>
 #include <client_session.h>
 #include <exception>
 #include <memory>
+#include <ostream>
 #include <server.h>
+#include <stdexcept>
 #include <thread>
 #include <vector>
+#include <iostream>
+#include <fstream>
+
+
 namespace opt = boost::program_options;
+namespace fs  = boost::filesystem;
 
 
+
+std::string getDefaultConfigPath() {
+    const char* homeDir = getenv("HOME");
+    if (!homeDir) { 
+        throw std::runtime_error("Не удалось определить домашнюю директорию");
+    }
+    fs::path  configDir  = fs::path(homeDir)/".config"/ "modbus-proxy";
+    fs::create_directory(configDir);
+    return (configDir / "proxy.conf").string();
+}
+
+void createDefaultConfig(const std::string& configPath) {
+    std::ofstream configFile(configPath);
+    std::vector<int> ports = {5020, 5021, 5022, 5023};
+    std::vector<std::string> ip = {"192.168.1.10", "192.168.1.11", "192.168.1.12", "192.168.1.13"};
+    if (configFile) {
+        configFile << " # Конфигуарационный файл приложения \n\n";
+        for (size_t i = 0; i <ip.size(); ++i) {
+            configFile << "deviceIP = ";
+            configFile << ip[i];
+            configFile << "\n";
+        }
+        for (size_t i = 0; i <ports.size(); ++i) {
+            configFile << "port = ";
+            configFile << ports[i];
+            configFile << "\n";
+        }
+        configFile << "\n";
+        std::cout << "Создан кофигурационный файл по умолчанию: "  << configPath << std::endl;
+    } else {
+        std::cerr << "Не удалось создать конфигурационный файл: "  << configPath << std::endl;
+    }
+
+}
 
 int  main (int argc, char* argv[]) {
 
-    opt::options_description desc("All options");
+    opt::options_description cmdlineOptions("Комндная строка");
 
-    desc.add_options()
+    cmdlineOptions.add_options()
         ("help", "Show help message")
-        ("devices", opt::value<std::vector<std::string>>()->multitoken()->required(),"Devices IP (1 to 4))");
+    ;
+
+    opt::options_description configOptions("Конфигурационные опции");
+    configOptions.add_options()
+        ("deviceIP", opt::value<std::vector<std::string>>()->multitoken()->required(),"IP адреса устройств")
+        ("port", opt::value<std::vector<int>>()->multitoken()->required(),"Порты на localhost для подключения к каждому устройству соответственно")
+    ;
+
 
     opt::variables_map vm;
 
-    try {
-        opt::store(opt::parse_command_line(argc, argv , desc), vm);
-        opt::notify(vm);
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " <<e.what() << std::endl;
-        return 1;
+    std::string configPath = getDefaultConfigPath();
+    if (!fs::exists(configPath)) {
+        createDefaultConfig(configPath);
     }
 
+    std::ifstream configFile (configPath.c_str());
+    if (configFile) {
+        opt::store(opt::parse_config_file(configFile, configOptions), vm);
+    }
+
+    opt::store(opt::command_line_parser(argc, argv).options(cmdlineOptions).run(),vm); 
+    opt::notify(vm);
+
     if (vm.count("help")) {
-        std::cout << desc << "\n";
+        std::cout << cmdlineOptions<< "\n" << configOptions << std::endl;
         return 0;
     }
 
-    if (vm.count("devices")) {
-        const std::vector<std::string> & devices  = vm ["devices"].as<std::vector<std::string>>();
+    if (vm.count("deviceIP")) {
+        const std::vector<std::string> & devices  = vm ["deviceIP"].as<std::vector<std::string>>();
         size_t num_devices = devices.size();
 
         if (num_devices < 1 || num_devices  > 4) {
-            std::cerr << "Error: Numver of servers must be between 1 and 4. Provided: " << num_devices  << std::endl;
+            std::cerr << "Ошибка количество устройств должно быть от 1 до 4 получено " << num_devices  << std::endl;
             return 1;
+        }
+
+        const std::vector<int> & ports = vm["port"].as<std::vector<int>>();
+        size_t num_ports = ports.size();
+        if (num_devices != num_ports) {
+            std::cerr << "Ошибка количетсво портов не совподает с количеством  устройств. Получено устройств " << num_devices <<" портов " << num_ports << std::endl;
+            return 1;
+
         }
 
         boost::asio::io_context ctx; 
 
-        std::vector<int> ports = {5020, 5021, 5022, 5023};
         std::vector<boost::asio::ip::tcp::endpoint> devices_endpoints;
         std::vector<std::unique_ptr<Server>> servers;
         std::vector<std::shared_ptr<DeviceHandler>> handlers;
@@ -64,6 +128,7 @@ int  main (int argc, char* argv[]) {
             auto device_handler = DeviceHandler::create(ctx, device_endpoint);
             handlers.push_back(device_handler);
             servers.push_back(std::make_unique<Server>(ctx, ports[i], device_handler));
+            std::cerr << "\n"<< "Connections to " <<devices[i] << " accepting in 127.0.0.1:" << ports[i] << ".\n";
         }
         const int thread_count = std::thread::hardware_concurrency();
         std::vector<std::thread> threads;
@@ -77,5 +142,11 @@ int  main (int argc, char* argv[]) {
 
         return 0;
     }
+    else {
+
+        std::cerr << "Ошибка не получены адреса устройств. " << std::endl;
+        return 1;
+    }
+
     return 0;
 }
