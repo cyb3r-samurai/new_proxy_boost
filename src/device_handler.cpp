@@ -4,9 +4,11 @@
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/strand.hpp>
+#include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/write.hpp>
 #include <boost/asio/read.hpp>
 #include <boost/asio/connect.hpp>
+#include <boost/date_time/posix_time/posix_time_config.hpp>
 #include <boost/system/detail/error_code.hpp>
 #include <boost/system/error_code.hpp>
 #include <cstddef>
@@ -26,6 +28,7 @@ DeviceHandler::DeviceHandler(boost::asio::io_context & ctx,
       , device_endpoint_(device_endpoint)
       , device_socket_(strand_)
       , timer_ (strand_)
+      ,timer_timeout_(strand_)
     { 
    //     connect_to_device();
     }
@@ -63,18 +66,30 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
     auto header_buf = std::make_shared<std::vector<uint8_t>>(6);
     auto current_response = std::make_shared<std::vector<uint8_t>>();
     auto iPtr =std::make_shared<uint16_t>(0);
+    auto is_comleted = std::make_shared<bool>(false);
+
+    timer_timeout_.expires_from_now(timeout_);
+    timer_timeout_.async_wait([this, callback, is_comleted, responses](const boost::system::error_code& ec) {
+            if (ec == boost::asio::error::operation_aborted) return;
+            if (*is_comleted) return;
+            *is_comleted = true;
+            device_socket_.cancel();
+            callback(boost::system::error_code(), *responses);
+            finish_processing();
+            });
 
     auto read_next_ptr = std::make_shared<std::function<void(boost::system::error_code)>>();
-    *read_next_ptr = [this, request_count, responses, header_buf, current_response, callback, iPtr, read_next_ptr](boost::system::error_code ec) mutable {
+    *read_next_ptr = [this, request_count, is_comleted,responses, header_buf, current_response, callback, iPtr, read_next_ptr](boost::system::error_code ec) mutable {
 
 //        std::cerr << std::endl << "i = " << *iPtr << "request_count = " << request_count;
-
+        if (*is_comleted) return;
         if (ec) {
             callback(ec,{});
             finish_processing();
             return;
         }
         if (*iPtr == request_count) {
+            *is_comleted = true;
             callback(boost::system::error_code(),*responses);
             finish_processing();
             return;
@@ -84,9 +99,9 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
         boost::asio::async_read (
                 device_socket_,
                 boost::asio::buffer(*header_buf),
-                [this, request_count, responses, header_buf, current_response, callback, read_next_ptr, iPtr] (
+                [this, request_count, responses, is_comleted,header_buf, current_response, callback, read_next_ptr, iPtr] (
                     boost::system::error_code ec, std::size_t)mutable {
-
+                if (*is_comleted) return;
                 if (ec) {
                     callback(ec, {});
                     finish_processing();
@@ -99,9 +114,9 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
                 boost::asio::async_read(
                         device_socket_,
                         boost::asio::buffer(current_response->data()+6, payload_len),
-                        [this, request_count, responses, header_buf, current_response, callback, read_next_ptr, iPtr](
+                        [this, request_count, is_comleted,responses, header_buf, current_response, callback, read_next_ptr, iPtr](
                             boost::system::error_code ec, std::size_t bytes_readed)mutable{
-
+                            if (*is_comleted) return;
                             if (ec) {
                                 callback(ec, {});
                                 finish_processing();

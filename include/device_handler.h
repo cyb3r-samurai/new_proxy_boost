@@ -1,6 +1,9 @@
 #pragma once
 
+#include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/steady_timer.hpp>
+#include <boost/date_time/posix_time/posix_time_config.hpp>
+#include <boost/date_time/posix_time/posix_time_duration.hpp>
 #include <boost/system//error_code.hpp>
 #include <boost/system/detail/error_code.hpp>
 #include <cstdint>
@@ -47,6 +50,7 @@ private:
     size_t depth = 0;
 //    uint16_t i = 0;
     
+     boost::posix_time::time_duration timeout_ = boost::posix_time::milliseconds(200);
     
     void async_write_read(uint16_t request_count, const std::vector<uint8_t>& data, std::function<void(boost::system::error_code,
                 std::vector<uint8_t>)>callback);
@@ -67,6 +71,7 @@ private:
     boost::asio::ip::tcp::socket device_socket_;
     boost::asio::steady_timer timer_;
     bool is_connected_ = false;
+    boost::asio::deadline_timer timer_timeout_;
 
 
     bool is_processing_ = false;
