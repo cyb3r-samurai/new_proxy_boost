@@ -78,11 +78,14 @@ void DeviceHandler::async_read_n_responses(
         }
     });
 
-    // рекурсивная лямбда без shared_ptr
-    std::function<void(boost::system::error_code)> read_next;
-    read_next = [this, request_count, is_completed, responses, header_buf,
-                 current_response, callback, iPtr, weak_self, &read_next]
-                (boost::system::error_code ec) mutable {
+    // Теперь используем shared_ptr, но без циклического захвата
+    auto read_next_ptr = std::make_shared<std::function<void(boost::system::error_code)>>();
+
+    std::weak_ptr<std::function<void(boost::system::error_code)>> weak_read_next = read_next_ptr;
+
+    *read_next_ptr = [this, request_count, is_completed, responses, header_buf,
+                      current_response, callback, iPtr, weak_self,
+                      weak_read_next](boost::system::error_code ec) mutable {
         if (*is_completed) return;
 
         if (ec) {
@@ -93,7 +96,6 @@ void DeviceHandler::async_read_n_responses(
 
         if (*iPtr == request_count) {
             *is_completed = true;
-            timer_timeout_.cancel();
             if (auto self = weak_self.lock()) {
                 callback(boost::system::error_code(), *responses);
                 self->finish_processing();
@@ -103,8 +105,10 @@ void DeviceHandler::async_read_n_responses(
 
         if (auto self = weak_self.lock()) {
             boost::asio::async_read(self->device_socket_, boost::asio::buffer(*header_buf),
-                [&, header_buf, current_response, responses, iPtr, is_completed, weak_self, callback]
+                [header_buf, current_response, responses, iPtr,
+                 is_completed, callback, weak_self, weak_read_next]
                 (boost::system::error_code ec, std::size_t) mutable {
+
                     if (*is_completed) return;
 
                     if (ec) {
@@ -120,7 +124,8 @@ void DeviceHandler::async_read_n_responses(
                     if (auto self2 = weak_self.lock()) {
                         boost::asio::async_read(self2->device_socket_,
                             boost::asio::buffer(current_response->data() + 6, payload_len),
-                            [&, current_response, responses, iPtr, is_completed, weak_self, callback]
+                            [current_response, responses, iPtr, is_completed,
+                             callback, weak_self, weak_read_next]
                             (boost::system::error_code ec, std::size_t bytes_read) mutable {
                                 if (*is_completed) return;
 
@@ -135,14 +140,18 @@ void DeviceHandler::async_read_n_responses(
                                                   current_response->begin() + 6 + bytes_read);
                                 (*iPtr)++;
 
-                                read_next(boost::system::error_code());
+                                // безопасный вызов рекурсии через weak_ptr
+                                if (auto read_next = weak_read_next.lock()) {
+                                    (*read_next)(boost::system::error_code());
+                                }
                             });
                     }
                 });
         }
     };
 
-    read_next(boost::system::error_code());
+    // первый вызов
+    (*read_next_ptr)(boost::system::error_code());
 }
 
 
