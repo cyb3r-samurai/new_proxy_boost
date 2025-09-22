@@ -52,97 +52,138 @@ void DeviceHandler::async_write_read(
                            });
 }
 
-
 void DeviceHandler::async_read_n_responses(
     uint16_t request_count,
     std::function<void(boost::system::error_code ec, std::vector<uint8_t>)> callback) {
 
+    // общие буферы/счётчики, живут пока живут колбэки
     auto responses = std::make_shared<std::vector<uint8_t>>();
-    auto header_buf = std::make_shared<std::vector<uint8_t>>(6);
+    auto header_buf = std::make_shared<std::array<uint8_t,6>>();
     auto current_response = std::make_shared<std::vector<uint8_t>>();
-    auto iPtr = std::make_shared<uint16_t>(0);
+    auto read_count = std::make_shared<uint16_t>(0);
     auto is_completed = std::make_shared<bool>(false);
 
     std::weak_ptr<DeviceHandler> weak_self = shared_from_this();
 
-    timer_timeout_.expires_from_now(timeout_);
-    timer_timeout_.async_wait([callback, is_completed, responses, weak_self, this](const boost::system::error_code &ec) {
-        if (ec == boost::asio::error::operation_aborted) return;
+    // Армируем таймаут для всей операции (можно менять логику — таймаут на каждое чтение)
+        timer_timeout_.expires_from_now(timeout_);
+        timer_timeout_.async_wait([weak_self, is_completed, responses, callback](const boost::system::error_code& ec) {
+        if (ec == boost::asio::error::operation_aborted) return; // таймер отменён нормальным завершением
         if (*is_completed) return;
         *is_completed = true;
-
         if (auto self = weak_self.lock()) {
+            // отменяем все операции на сокете
             self->device_socket_.cancel();
-            callback(boost::system::error_code(), *responses);
+            // возвращаем таймаут как ошибку
+            callback(boost::system::error_code(boost::asio::error::timed_out), *responses);
             self->finish_processing();
         }
     });
 
-    // Теперь используем shared_ptr, но без циклического захвата
-    auto read_next_ptr = std::make_shared<std::function<void(boost::system::error_code)>>();
+    // рекурсивный вызов через shared_ptr/weak_ptr (чтобы не было самоссылок)
+    auto read_next_ptr = std::make_shared<std::function<void(const boost::system::error_code&)>>();
+    std::weak_ptr<std::function<void(const boost::system::error_code&)>> weak_read_next = read_next_ptr;
 
-    std::weak_ptr<std::function<void(boost::system::error_code)>> weak_read_next = read_next_ptr;
-
-    *read_next_ptr = [this, request_count, is_completed, responses, header_buf,
-                      current_response, callback, iPtr, weak_self,
-                      weak_read_next](boost::system::error_code ec) mutable {
+    *read_next_ptr = [weak_self, header_buf, current_response, responses, read_count, is_completed, request_count, callback, weak_read_next, this](const boost::system::error_code& ec) mutable {
         if (*is_completed) return;
 
         if (ec) {
-            callback(ec, {});
-            if (auto self = weak_self.lock()) self->finish_processing();
-            return;
-        }
-
-        if (*iPtr == request_count) {
-            *is_completed = true;
+            // ошибка от предыдущей операции
             if (auto self = weak_self.lock()) {
-                callback(boost::system::error_code(), *responses);
+                *is_completed = true;
+                self->timer_timeout_.cancel();
+                callback(ec, {});
                 self->finish_processing();
             }
             return;
         }
 
+        // если уже прочли все ответы
+        if (*read_count >= request_count) {
+            if (auto self = weak_self.lock()) {
+                *is_completed = true;
+                self->timer_timeout_.cancel();
+                callback(boost::system::error_code(), *responses);
+                // опционально освободить память
+                responses->clear();
+                responses->shrink_to_fit();
+                self->finish_processing();
+            }
+            return;
+        }
+
+        // читаем заголовок ровно 6 байт
         if (auto self = weak_self.lock()) {
-            boost::asio::async_read(self->device_socket_, boost::asio::buffer(*header_buf),
-                [header_buf, current_response, responses, iPtr,
-                 is_completed, callback, weak_self, weak_read_next]
-                (boost::system::error_code ec, std::size_t) mutable {
-
+            boost::asio::async_read(self->device_socket_, boost::asio::buffer(header_buf->data(), 6),
+                [weak_self, header_buf, current_response, responses, read_count, is_completed, request_count, callback, weak_read_next](const boost::system::error_code& ec, std::size_t bytes_transferred) mutable {
                     if (*is_completed) return;
-
                     if (ec) {
-                        callback(ec, {});
-                        if (auto self = weak_self.lock()) self->finish_processing();
+                        if (auto self = weak_self.lock()) {
+                            *is_completed = true;
+                            self->timer_timeout_.cancel();
+                            callback(ec, {});
+                            self->finish_processing();
+                        }
+                        return;
+                    }
+                    if (bytes_transferred != 6) {
+                        if (auto self = weak_self.lock()) {
+                            *is_completed = true;
+                            self->timer_timeout_.cancel();
+                            callback(boost::system::error_code(boost::asio::error::fault), {});
+                            self->finish_processing();
+                        }
                         return;
                     }
 
-                    size_t payload_len = ((*header_buf)[4] << 8) | (*header_buf)[5];
+                    // наглядный лог (вставь по необходимости)
+                     std::cerr << "Header read ok\n";
+
+                    uint16_t payload_len = static_cast<uint16_t>(((uint16_t)((*header_buf)[4]) << 8) | (*header_buf)[5]);
+
+                    // подготовим буфер пакета: заголовок + payload_len
                     current_response->resize(6 + payload_len);
                     std::copy_n(header_buf->begin(), 6, current_response->begin());
 
                     if (auto self2 = weak_self.lock()) {
-                        boost::asio::async_read(self2->device_socket_,
-                            boost::asio::buffer(current_response->data() + 6, payload_len),
-                            [current_response, responses, iPtr, is_completed,
-                             callback, weak_self, weak_read_next]
-                            (boost::system::error_code ec, std::size_t bytes_read) mutable {
+                        // читаем ровно payload_len байт
+                        boost::asio::async_read(self2->device_socket_, boost::asio::buffer(current_response->data() + 6, payload_len),
+                            [weak_self, header_buf, current_response, responses, read_count, is_completed, request_count, callback, weak_read_next](const boost::system::error_code& ec, std::size_t payload_read) mutable {
                                 if (*is_completed) return;
-
                                 if (ec) {
-                                    callback(ec, {});
-                                    if (auto self = weak_self.lock()) self->finish_processing();
+                                    if (auto self = weak_self.lock()) {
+                                        *is_completed = true;
+                                        self->timer_timeout_.cancel();
+                                        callback(ec, {});
+                                        self->finish_processing();
+                                    }
                                     return;
                                 }
 
-                                responses->insert(responses->end(),
-                                                  current_response->begin(),
-                                                  current_response->begin() + 6 + bytes_read);
-                                (*iPtr)++;
+                                // payload_read должен равняться payload_len
+                                if (payload_read != (current_response->size() - 6)) {
+                                    if (auto self = weak_self.lock()) {
+                                        *is_completed = true;
+                                        self->timer_timeout_.cancel();
+                                        callback(boost::system::error_code(boost::asio::error::fault), {});
+                                        self->finish_processing();
+                                    }
+                                    return;
+                                }
 
-                                // безопасный вызов рекурсии через weak_ptr
-                                if (auto read_next = weak_read_next.lock()) {
-                                    (*read_next)(boost::system::error_code());
+                                // добавляем весь пакет (6 + payload_len) в результирующий буфер
+                                responses->insert(responses->end(), current_response->begin(), current_response->end());
+
+                                ++(*read_count);
+
+                                // отладочный вывод (по желанию)
+                                 std::cerr << "Read packet " << *read_count << "/" << request_count
+                                           << " payload_len=" << (current_response->size() - 6)
+                                           << " total_bytes=" << responses->size() << "\n";
+
+                                // продолжаем цикл — безопасный вызов через weak_ptr
+                                if (auto read_next_locked = weak_read_next.lock()) {
+                                    (*read_next_locked)(boost::system::error_code());
                                 }
                             });
                     }
@@ -150,9 +191,10 @@ void DeviceHandler::async_read_n_responses(
         }
     };
 
-    // первый вызов
+    // стартуем
     (*read_next_ptr)(boost::system::error_code());
 }
+
 
 
 void DeviceHandler::push_reqest(
