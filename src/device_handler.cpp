@@ -78,12 +78,15 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
             finish_processing();
             });
 
+    std::weak_ptr<DeviceHandler> weak_self = shared_from_this();
     auto read_next_ptr = std::make_shared<std::function<void(boost::system::error_code)>>();
-    *read_next_ptr = [this, request_count, is_comleted,responses, header_buf, current_response, callback, iPtr, read_next_ptr](boost::system::error_code ec) mutable {
+    std::weak_ptr<std::function<void(boost::system::error_code)>> weak_read_next = read_next_ptr;
+    *read_next_ptr = [this, request_count, is_comleted,responses, header_buf, current_response, callback, iPtr, weak_read_next](boost::system::error_code ec) mutable {
 
 //        std::cerr << std::endl << "i = " << *iPtr << "request_count = " << request_count;
         if (*is_comleted) return;
         if (ec) {
+             
             callback(ec,{});
             finish_processing();
             return;
@@ -99,7 +102,7 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
         boost::asio::async_read (
                 device_socket_,
                 boost::asio::buffer(*header_buf),
-                [this, request_count, responses, is_comleted,header_buf, current_response, callback, read_next_ptr, iPtr] (
+                [this, request_count, responses, is_comleted,header_buf, current_response, callback, weak_read_next, iPtr] (
                     boost::system::error_code ec, std::size_t)mutable {
                 if (*is_comleted) return;
                 if (ec) {
@@ -114,7 +117,7 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
                 boost::asio::async_read(
                         device_socket_,
                         boost::asio::buffer(current_response->data()+6, payload_len),
-                        [this, request_count, is_comleted,responses, header_buf, current_response, callback, read_next_ptr, iPtr](
+                        [this, request_count, is_comleted,responses, header_buf, current_response, callback, weak_read_next, iPtr](
                             boost::system::error_code ec, std::size_t bytes_readed)mutable{
                             if (*is_comleted) return;
                             if (ec) {
@@ -124,7 +127,9 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
                             }
                             std::copy(current_response->begin(), current_response->begin()+6+bytes_readed, std::back_inserter(*responses));
                             (*iPtr) ++;
+                            if (auto read_next_ptr = weak_read_next.lock()){
                             (*read_next_ptr)(boost::system::error_code());
+                            }
                         });
 
                 }
@@ -132,7 +137,9 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
         );
 	};
 
+                            if (auto read_next_ptr = weak_read_next.lock()){
 	(*read_next_ptr)(boost::system::error_code());
+                            }
 
 }
 
