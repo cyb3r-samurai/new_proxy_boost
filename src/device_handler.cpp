@@ -78,62 +78,79 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
             finish_processing();
             });
 
-    auto read_next_ptr = std::make_shared<std::function<void(boost::system::error_code)>>();
-    *read_next_ptr = [this, request_count, is_comleted,responses, header_buf, current_response, callback, iPtr, read_next_ptr](boost::system::error_code ec) mutable {
+    struct ReadState {
+        uint16_t request_count;
+        std::shared_ptr<DeviceHandler> self;
+        std::shared_ptr<bool> is_completed;
+        std::shared_ptr<std::vector<uint8_t>> responses;
+        std::shared_ptr<std::vector<uint8_t>> header_buf;
+        std::shared_ptr<std::vector<uint8_t>> current_response;
+        std::function<void(boost::system::error_code ec, std::vector<uint8_t>)> callback;
+        std::shared_ptr<uint16_t>iPtr;
 
-//        std::cerr << std::endl << "i = " << *iPtr << "request_count = " << request_count;
-        if (*is_comleted) return;
-        if (ec) {
-            callback(ec,{});
-            finish_processing();
-            return;
-        }
-        if (*iPtr == request_count) {
-            *is_comleted = true;
-            callback(boost::system::error_code(),*responses);
-            finish_processing();
-            return;
-        }
+        void read_next() {
+            if (*is_completed ) return;
+            if ((*iPtr) == request_count ) {
+                *is_completed = true;
+                self->timer_timeout_.cancel();
+                callback(boost::system::error_code(), *responses);
+                return;
+            }
 
-
-        boost::asio::async_read (
-                device_socket_,
+        auto state = std::make_shared<ReadState>(*this);
+            boost::asio::async_read(
+                self->device_socket_,
                 boost::asio::buffer(*header_buf),
-                [this, request_count, responses, is_comleted,header_buf, current_response, callback, read_next_ptr, iPtr] (
-                    boost::system::error_code ec, std::size_t)mutable {
-                if (*is_comleted) return;
-                if (ec) {
-                    callback(ec, {});
-                    finish_processing();
-                    return;
-                }
-                size_t payload_len = ((*header_buf)[4] << 8) | (*header_buf)[5];
-                current_response->resize(6+payload_len);
-                std::copy_n(header_buf->begin(), 6, current_response->begin());
+                [state](boost::system::error_code ec, std::size_t) mutable {
+                    if (state->self) return;
 
-                boost::asio::async_read(
-                        device_socket_,
-                        boost::asio::buffer(current_response->data()+6, payload_len),
-                        [this, request_count, is_comleted,responses, header_buf, current_response, callback, read_next_ptr, iPtr](
-                            boost::system::error_code ec, std::size_t bytes_readed)mutable{
-                            if (*is_comleted) return;
+                    if (*state->is_completed) return;
+                    if (ec) {
+                        *state->is_completed = true;
+                        state->self->timer_timeout_.cancel();
+                        state->callback(ec, {});
+                        return;
+                    }
+
+                    size_t payload_len = ((*state->header_buf)[4] << 8) | (*state->header_buf)[5];
+                    state->current_response->resize(6 + payload_len);
+                    std::copy_n(state->header_buf->begin(), 6, state->current_response->begin());
+
+                    boost::asio::async_read(
+                        state->self->device_socket_,
+                        boost::asio::buffer(state->current_response->data() + 6, payload_len),
+                        [state](boost::system::error_code ec, std::size_t bytes_read) mutable {
+                            if (state->self) return;
+
+                            if (*state->is_completed) return;
                             if (ec) {
-                                callback(ec, {});
-                                finish_processing();
+                                *state->is_completed = true;
+                                state->self->timer_timeout_.cancel();
+                                state->callback(ec, {});
                                 return;
                             }
-                            std::copy(current_response->begin(), current_response->begin()+6+bytes_readed, std::back_inserter(*responses));
-                            (*iPtr) ++;
-                            (*read_next_ptr)(boost::system::error_code());
+
+                            std::copy(state->current_response->begin(), 
+                                    state->current_response->begin() + 6 + bytes_read, 
+                                    std::back_inserter(*state->responses));
+                            (*state->iPtr)++;
+
+                            // Continue reading next response recursively
+                            state->read_next();
                         });
+                });
+        }
+    };
+    auto state = std::make_shared<ReadState>();
+    state ->self = shared_from_this();        
+    state->request_count = request_count;
+    state->is_completed = is_comleted;
+    state->responses = responses;
+    state->header_buf = header_buf;
+    state->callback = callback;
+    state->iPtr = iPtr;
 
-                }
-
-        );
-	};
-
-	(*read_next_ptr)(boost::system::error_code());
-
+    state->read_next();
 }
 
 void DeviceHandler::push_reqest(uint16_t request_count, std::vector<uint8_t>
