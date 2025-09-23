@@ -205,35 +205,15 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/asio/detail/pop_options.hpp \
  /usr/include/boost/detail/workaround.hpp \
  /usr/include/boost/asio/detail/is_buffer_sequence.hpp \
- /usr/include/boost/asio/io_context.hpp \
- /usr/include/boost/asio/async_result.hpp \
- /usr/include/boost/asio/detail/variadic_templates.hpp \
- /usr/include/boost/asio/detail/concurrency_hint.hpp \
- /usr/include/boost/asio/detail/noncopyable.hpp \
- /usr/include/boost/asio/detail/wrapped_handler.hpp \
- /usr/include/boost/asio/detail/bind_handler.hpp \
- /usr/include/boost/asio/associator.hpp \
- /usr/include/boost/asio/detail/handler_alloc_helpers.hpp \
- /usr/include/boost/asio/detail/recycling_allocator.hpp \
- /usr/include/boost/asio/detail/thread_context.hpp \
- /usr/include/c++/13/climits \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h \
- /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
- /usr/include/x86_64-linux-gnu/bits/local_lim.h \
- /usr/include/linux/limits.h \
- /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
- /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
- /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
- /usr/include/boost/asio/detail/call_stack.hpp \
- /usr/include/boost/asio/detail/tss_ptr.hpp \
- /usr/include/boost/asio/detail/keyword_tss_ptr.hpp \
- /usr/include/boost/asio/detail/impl/thread_context.ipp \
- /usr/include/boost/asio/detail/thread_info_base.hpp \
- /usr/include/boost/asio/multiple_exceptions.hpp \
- /usr/include/boost/asio/impl/multiple_exceptions.ipp \
- /usr/include/boost/asio/associated_allocator.hpp \
- /usr/include/boost/asio/detail/functional.hpp \
+ /usr/include/boost/asio/error.hpp /usr/include/boost/cerrno.hpp \
+ /usr/include/boost/system/detail/cerrno.hpp \
+ /usr/include/boost/system/error_code.hpp \
+ /usr/include/boost/system/detail/error_code.hpp \
+ /usr/include/boost/system/is_error_code_enum.hpp \
+ /usr/include/boost/system/detail/error_category.hpp \
+ /usr/include/boost/system/detail/config.hpp \
+ /usr/include/boost/system/detail/requires_cxx11.hpp \
+ /usr/include/boost/config/pragma_message.hpp \
  /usr/include/c++/13/functional /usr/include/c++/13/bits/std_function.h \
  /usr/include/c++/13/unordered_map \
  /usr/include/c++/13/bits/unordered_map.h \
@@ -244,20 +224,7 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/c++/13/bits/erase_if.h /usr/include/c++/13/bits/stl_algo.h \
  /usr/include/c++/13/bits/algorithmfwd.h \
  /usr/include/c++/13/bits/stl_heap.h \
- /usr/include/c++/13/bits/uniform_int_dist.h \
- /usr/include/boost/asio/handler_alloc_hook.hpp \
- /usr/include/boost/asio/impl/handler_alloc_hook.ipp \
- /usr/include/boost/asio/detail/handler_cont_helpers.hpp \
- /usr/include/boost/asio/handler_continuation_hook.hpp \
- /usr/include/boost/asio/detail/handler_invoke_helpers.hpp \
- /usr/include/boost/asio/handler_invoke_hook.hpp \
- /usr/include/boost/system/error_code.hpp \
- /usr/include/boost/system/detail/error_code.hpp \
- /usr/include/boost/system/is_error_code_enum.hpp \
- /usr/include/boost/system/detail/error_category.hpp \
- /usr/include/boost/system/detail/config.hpp \
- /usr/include/boost/system/detail/requires_cxx11.hpp \
- /usr/include/boost/config/pragma_message.hpp /usr/include/c++/13/atomic \
+ /usr/include/c++/13/bits/uniform_int_dist.h /usr/include/c++/13/atomic \
  /usr/include/boost/system/detail/error_condition.hpp \
  /usr/include/boost/system/detail/generic_category.hpp \
  /usr/include/boost/system/detail/generic_category_message.hpp \
@@ -265,7 +232,6 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/system/detail/is_same.hpp \
  /usr/include/boost/system/detail/errc.hpp \
  /usr/include/boost/system/is_error_condition_enum.hpp \
- /usr/include/boost/system/detail/cerrno.hpp \
  /usr/include/boost/system/detail/append_int.hpp \
  /usr/include/boost/system/detail/snprintf.hpp \
  /usr/include/c++/13/cstdarg \
@@ -297,6 +263,64 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/system/generic_category.hpp \
  /usr/include/boost/system/system_category.hpp \
  /usr/include/boost/system/detail/throws.hpp \
+ /usr/include/boost/system/system_error.hpp /usr/include/c++/13/cassert \
+ /usr/include/assert.h /usr/include/netdb.h /usr/include/netinet/in.h \
+ /usr/include/x86_64-linux-gnu/sys/socket.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
+ /usr/include/x86_64-linux-gnu/bits/socket.h \
+ /usr/include/x86_64-linux-gnu/bits/socket_type.h \
+ /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
+ /usr/include/x86_64-linux-gnu/asm/socket.h \
+ /usr/include/asm-generic/socket.h /usr/include/linux/posix_types.h \
+ /usr/include/linux/stddef.h \
+ /usr/include/x86_64-linux-gnu/asm/posix_types.h \
+ /usr/include/x86_64-linux-gnu/asm/posix_types_64.h \
+ /usr/include/asm-generic/posix_types.h \
+ /usr/include/x86_64-linux-gnu/asm/bitsperlong.h \
+ /usr/include/asm-generic/bitsperlong.h \
+ /usr/include/x86_64-linux-gnu/asm/sockios.h \
+ /usr/include/asm-generic/sockios.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
+ /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/rpc/netdb.h \
+ /usr/include/x86_64-linux-gnu/bits/types/sigevent_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__sigval_t.h \
+ /usr/include/x86_64-linux-gnu/bits/netdb.h \
+ /usr/include/boost/asio/impl/error.ipp \
+ /usr/include/boost/asio/io_context.hpp \
+ /usr/include/boost/asio/async_result.hpp \
+ /usr/include/boost/asio/detail/variadic_templates.hpp \
+ /usr/include/boost/asio/detail/concurrency_hint.hpp \
+ /usr/include/boost/asio/detail/noncopyable.hpp \
+ /usr/include/boost/asio/detail/wrapped_handler.hpp \
+ /usr/include/boost/asio/detail/bind_handler.hpp \
+ /usr/include/boost/asio/associator.hpp \
+ /usr/include/boost/asio/detail/handler_alloc_helpers.hpp \
+ /usr/include/boost/asio/detail/recycling_allocator.hpp \
+ /usr/include/boost/asio/detail/thread_context.hpp \
+ /usr/include/c++/13/climits \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h \
+ /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+ /usr/include/linux/limits.h \
+ /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
+ /usr/include/boost/asio/detail/call_stack.hpp \
+ /usr/include/boost/asio/detail/tss_ptr.hpp \
+ /usr/include/boost/asio/detail/keyword_tss_ptr.hpp \
+ /usr/include/boost/asio/detail/impl/thread_context.ipp \
+ /usr/include/boost/asio/detail/thread_info_base.hpp \
+ /usr/include/boost/asio/multiple_exceptions.hpp \
+ /usr/include/boost/asio/impl/multiple_exceptions.ipp \
+ /usr/include/boost/asio/associated_allocator.hpp \
+ /usr/include/boost/asio/detail/functional.hpp \
+ /usr/include/boost/asio/handler_alloc_hook.hpp \
+ /usr/include/boost/asio/impl/handler_alloc_hook.ipp \
+ /usr/include/boost/asio/detail/handler_cont_helpers.hpp \
+ /usr/include/boost/asio/handler_continuation_hook.hpp \
+ /usr/include/boost/asio/detail/handler_invoke_helpers.hpp \
+ /usr/include/boost/asio/handler_invoke_hook.hpp \
  /usr/include/boost/asio/execution.hpp \
  /usr/include/boost/asio/execution/allocator.hpp \
  /usr/include/boost/asio/execution/executor.hpp \
@@ -339,7 +363,7 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/asio/traits/static_query.hpp \
  /usr/include/boost/asio/execution/any_executor.hpp \
  /usr/include/boost/asio/detail/assert.hpp /usr/include/boost/assert.hpp \
- /usr/include/assert.h /usr/include/boost/asio/detail/cstddef.hpp \
+ /usr/include/boost/asio/detail/cstddef.hpp \
  /usr/include/boost/asio/detail/executor_function.hpp \
  /usr/include/boost/asio/detail/non_const_lvalue.hpp \
  /usr/include/boost/asio/detail/scoped_ptr.hpp \
@@ -362,30 +386,6 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/asio/detail/impl/posix_event.ipp \
  /usr/include/boost/asio/detail/throw_error.hpp \
  /usr/include/boost/asio/detail/impl/throw_error.ipp \
- /usr/include/boost/system/system_error.hpp /usr/include/c++/13/cassert \
- /usr/include/boost/asio/error.hpp /usr/include/boost/cerrno.hpp \
- /usr/include/netdb.h /usr/include/netinet/in.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
- /usr/include/x86_64-linux-gnu/bits/socket_type.h \
- /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
- /usr/include/x86_64-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h /usr/include/linux/posix_types.h \
- /usr/include/linux/stddef.h \
- /usr/include/x86_64-linux-gnu/asm/posix_types.h \
- /usr/include/x86_64-linux-gnu/asm/posix_types_64.h \
- /usr/include/asm-generic/posix_types.h \
- /usr/include/x86_64-linux-gnu/asm/bitsperlong.h \
- /usr/include/asm-generic/bitsperlong.h \
- /usr/include/x86_64-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/rpc/netdb.h \
- /usr/include/x86_64-linux-gnu/bits/types/sigevent_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/__sigval_t.h \
- /usr/include/x86_64-linux-gnu/bits/netdb.h \
- /usr/include/boost/asio/impl/error.ipp \
  /usr/include/boost/asio/detail/mutex.hpp \
  /usr/include/boost/asio/detail/posix_mutex.hpp \
  /usr/include/boost/asio/detail/scoped_lock.hpp \
@@ -893,6 +893,8 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/asio/detail/strand_service.hpp \
  /usr/include/boost/asio/detail/impl/strand_service.hpp \
  /usr/include/boost/asio/detail/impl/strand_service.ipp \
+ /usr/include/boost/asio/deadline_timer.hpp \
+ /usr/include/boost/asio/basic_deadline_timer.hpp \
  /usr/include/boost/asio/write.hpp \
  /usr/include/boost/asio/completion_condition.hpp \
  /usr/include/boost/asio/basic_streambuf_fwd.hpp \

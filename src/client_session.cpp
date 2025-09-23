@@ -58,11 +58,14 @@ void ClientSession::calculate_request_count(std::shared_ptr<ClientSession> self,
     std::cout << bytes_reaminning << " " << request_count<< std::endl;
     std::cout << "we in ready to send push_request";
     device_handler_->push_reqest(request_count, *message,
-            [this,self](boost::system::error_code ec, std::vector<uint8_t> recponse) {
+            [weak_self = std::weak_ptr<ClientSession>(self)](boost::system::error_code ec, std::vector<uint8_t> response) {
+                auto self = weak_self.lock();
+                if (!self) return;
+                
                 if (!ec) {
-                    send_to_client(self, recponse);
-            }
-    });
+                    self->send_to_client(self, response);
+                }
+            });
 }
 
 
