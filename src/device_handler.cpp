@@ -56,7 +56,13 @@ void DeviceHandler::async_write_read(uint16_t request_count, const std::vector<u
                 return;
             }
 
-			self->async_read_n_responses(request_count, callback);
+			self->async_read_n_responses(request_count, [weak_self, callback](boost::system::error_code ec, std::vector<uint8_t> response) {
+				auto self = weak_self.lock();
+				if (!self) return;
+				
+				callback(ec, response);
+				self->finish_processing();
+			});
 		}
 	);
 }
@@ -82,7 +88,6 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
         *is_completed = true;
         self->device_socket_.cancel();
         callback(boost::system::error_code(), *responses);
-        self->finish_processing();
     });
 
     // Create a recursive lambda using a shared state object
@@ -106,7 +111,6 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
                 *is_completed = true;
                 self->timer_timeout_.cancel();
                 callback(boost::system::error_code(), *responses);
-                self->finish_processing();
                 return;
             }
 
@@ -123,7 +127,6 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
                         *state->is_completed = true;
                         self->timer_timeout_.cancel();
                         state->callback(ec, {});
-                        self->finish_processing();
                         return;
                     }
 
@@ -143,7 +146,6 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
                                 *state->is_completed = true;
                                 self->timer_timeout_.cancel();
                                 state->callback(ec, {});
-                                self->finish_processing();
                                 return;
                             }
 
@@ -208,7 +210,6 @@ void DeviceHandler::connect_to_device(){
 
 
 void DeviceHandler::finish_processing() {
-	is_processing_ = false;
 	process_next_request();
 }
 
@@ -229,10 +230,6 @@ void DeviceHandler::process_next_request() {
 		return;
 	}
 
-	if (is_processing_) {
-		return;
-	}
-
 	std::function<void(boost::system::error_code ec, std::vector<uint8_t>)> callback;
 	std::vector<uint8_t> data;
 	uint16_t request_count;
@@ -248,7 +245,6 @@ void DeviceHandler::process_next_request() {
 	    data = std::move(request.data);
 	    callback = std::move(request.callback);
 	    request_count = request.request_count;
-	    is_processing_ = true;
 	}
 
     if(!device_socket_.is_open()) {
@@ -268,4 +264,3 @@ void DeviceHandler::retry_connection() {
             self->connect_to_device();
             });
 }
-

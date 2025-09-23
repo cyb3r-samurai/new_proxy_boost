@@ -73,8 +73,6 @@ private:
     bool is_connected_ = false;
     boost::asio::deadline_timer timer_timeout_;
 
-
-    bool is_processing_ = false;
     std::mutex queue_mutex_;
     std::queue<Request> request_queue_;
 };
