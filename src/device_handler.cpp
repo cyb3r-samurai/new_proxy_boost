@@ -47,8 +47,8 @@ void DeviceHandler::async_write_read(uint16_t request_count, const std::vector<u
 
 			[self = shared_from_this(), callback, request_count] (boost::system::error_code ec, std::size_t) {
                 if (ec) {
-                    callback(ec, {});
                     self->finish_processing();
+                    callback(ec, {});
                     return;
                 }
 
@@ -61,97 +61,43 @@ void DeviceHandler::async_write_read(uint16_t request_count, const std::vector<u
 }
 void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function<void(boost::system::error_code ec,
             std::vector<uint8_t>)> callback) {
-
-    auto responses = std::make_shared<std::vector<uint8_t>>();
+  auto responses = std::make_shared<std::vector<uint8_t>>();
     auto header_buf = std::make_shared<std::vector<uint8_t>>(6);
     auto current_response = std::make_shared<std::vector<uint8_t>>();
-    auto iPtr =std::make_shared<uint16_t>(0);
-    auto is_comleted = std::make_shared<bool>(false);
+    auto iPtr = std::make_shared<uint16_t>(0);
+    auto is_completed = std::make_shared<bool>(false);
+
+    // Use weak_ptr to avoid circular reference
+    std::weak_ptr<DeviceHandler> weak_self = shared_from_this();
 
     timer_timeout_.expires_from_now(timeout_);
-    timer_timeout_.async_wait([this, callback, is_comleted, responses](const boost::system::error_code& ec) {
-            if (ec == boost::asio::error::operation_aborted) return;
-            if (*is_comleted) return;
-            *is_comleted = true;
-            device_socket_.cancel();
-            callback(boost::system::error_code(), *responses);
-            finish_processing();
-            });
+    timer_timeout_.async_wait([weak_self, callback, is_completed, responses](const boost::system::error_code& ec) {
+        auto self = weak_self.lock();
+        if (!self) return;
 
-    struct ReadState {
-        uint16_t request_count;
-        std::shared_ptr<DeviceHandler> self;
-        std::shared_ptr<bool> is_completed;
-        std::shared_ptr<std::vector<uint8_t>> responses;
-        std::shared_ptr<std::vector<uint8_t>> header_buf;
-        std::shared_ptr<std::vector<uint8_t>> current_response;
-        std::function<void(boost::system::error_code ec, std::vector<uint8_t>)> callback;
-        std::shared_ptr<uint16_t>iPtr;
+        if (ec == boost::asio::error::operation_aborted) return;
+        if (*is_completed) return;
+        *is_completed = true;
+        self->device_socket_.cancel();
+        callback(boost::system::error_code(), *responses);
+	self->finish_processing();
+    });
 
-        void read_next() {
-            if (*is_completed ) return;
-            if ((*iPtr) == request_count ) {
-                *is_completed = true;
-                self->timer_timeout_.cancel();
-                callback(boost::system::error_code(), *responses);
-                return;
-            }
+    // Create a recursive lambda using a shared state object
 
-        auto state = std::make_shared<ReadState>(*this);
-            boost::asio::async_read(
-                self->device_socket_,
-                boost::asio::buffer(*header_buf),
-                [state](boost::system::error_code ec, std::size_t) mutable {
-                    if (state->self) return;
+    read_state.weak_self = weak_self;
+    read_state.request_count = request_count;
+    read_state.is_completed = is_completed;
+    read_state.responses = responses;
+    read_state.header_buf = header_buf;
+    read_state.current_response = current_response;
+    read_state.callback = callback;
+    read_state.iPtr = iPtr;
 
-                    if (*state->is_completed) return;
-                    if (ec) {
-                        *state->is_completed = true;
-                        state->self->timer_timeout_.cancel();
-                        state->callback(ec, {});
-                        return;
-                    }
-
-                    size_t payload_len = ((*state->header_buf)[4] << 8) | (*state->header_buf)[5];
-                    state->current_response->resize(6 + payload_len);
-                    std::copy_n(state->header_buf->begin(), 6, state->current_response->begin());
-
-                    boost::asio::async_read(
-                        state->self->device_socket_,
-                        boost::asio::buffer(state->current_response->data() + 6, payload_len),
-                        [state](boost::system::error_code ec, std::size_t bytes_read) mutable {
-                            if (state->self) return;
-
-                            if (*state->is_completed) return;
-                            if (ec) {
-                                *state->is_completed = true;
-                                state->self->timer_timeout_.cancel();
-                                state->callback(ec, {});
-                                return;
-                            }
-
-                            std::copy(state->current_response->begin(), 
-                                    state->current_response->begin() + 6 + bytes_read, 
-                                    std::back_inserter(*state->responses));
-                            (*state->iPtr)++;
-
-                            // Continue reading next response recursively
-                            state->read_next();
-                        });
-                });
-        }
-    };
-    auto state = std::make_shared<ReadState>();
-    state ->self = shared_from_this();        
-    state->request_count = request_count;
-    state->is_completed = is_comleted;
-    state->responses = responses;
-    state->header_buf = header_buf;
-    state->callback = callback;
-    state->iPtr = iPtr;
-
-    state->read_next();
+    // Start reading responses
+    read_state.read_next();
 }
+
 
 void DeviceHandler::push_reqest(uint16_t request_count, std::vector<uint8_t>
 		data, std::function<void(boost::system::error_code,std::vector<uint8_t>)>callback) {
@@ -173,6 +119,7 @@ void DeviceHandler::push_reqest(uint16_t request_count, std::vector<uint8_t>
 }
 
 void DeviceHandler::connect_to_device(){
+	std::cerr << "try to connnect to "<<device_endpoint_.address().to_string() << std::endl;
     device_socket_.async_connect(device_endpoint_,
             [self = shared_from_this()](boost::system::error_code ec){
                 if(!ec) {
@@ -181,13 +128,14 @@ void DeviceHandler::connect_to_device(){
 		    self->process_next_request();
                    // self->try_send_request();
                 } else {
-                    self->retry_connection(); 
+           //         self->retry_connection(); 
                 }
             });
 }
 
 
 void DeviceHandler::finish_processing() {
+	std::cerr << std::endl  << "we in finish processing" << std::endl;
 	is_processing_ = false;
 	process_next_request();
 }
@@ -201,7 +149,15 @@ void DeviceHandler::handle_request_error( boost::system::error_code ec){
 }
 
 void DeviceHandler::process_next_request() {
+	std::cerr << std::endl << "we in process next request"<< std::endl;
+	if (!strand_.running_in_this_thread()) {
+		boost::asio::post(strand_, [self= shared_from_this()]() {
+			self->process_next_request();
+		});
+		return;
+	}
 	if (is_processing_) {
+	std::cerr << std::endl << "we in process next request return" <<std::endl;
 		return;
 	}
 
@@ -237,7 +193,7 @@ void DeviceHandler::process_next_request() {
 
 void DeviceHandler::retry_connection() {
     std::cerr << "\n" << "error recconnect to "<< this->device_endpoint_.address() << ".\n";
-    timer_.expires_after(std::chrono::seconds(1));
+    timer_.expires_after(std::chrono::seconds(5));
     timer_.async_wait([self = shared_from_this()](boost::system::error_code) {
             self->connect_to_device();
             });

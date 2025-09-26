@@ -1,25 +1,17 @@
-#include <boost/asio/io_context.hpp>
-#include <boost/asio/ip/address.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/program_options.hpp>
-#include <boost/program_options/detail/parsers.hpp>
-#include <boost/program_options/option.hpp>
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/parsers.hpp>
-#include <boost/program_options/variables_map.hpp>
-#include <boost/filesystem.hpp>
 #include <device_handler.h>
 #include <client_session.h>
-#include <exception>
-#include <memory>
-#include <ostream>
 #include <server.h>
-#include <stdexcept>
+
+#include <boost/filesystem/path.hpp>
+#include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
+
+#include <exception>
+#include <fstream>
+#include <memory>
 #include <thread>
 #include <vector>
 #include <iostream>
-#include <fstream>
 
 
 namespace opt = boost::program_options;
@@ -130,7 +122,7 @@ int  main (int argc, char* argv[]) {
             servers.push_back(std::make_unique<Server>(ctx, ports[i], device_handler));
             std::cerr << "\n"<< "Connections to " <<devices[i] << " accepting in 127.0.0.1:" << ports[i] << ".\n";
         }
-        const int thread_count = std::thread::hardware_concurrency();
+        const int thread_count = 16;
         std::vector<std::thread> threads;
         for (int i = 0; i < thread_count; ++i) {
             threads.emplace_back([&ctx]  {ctx.run();});
