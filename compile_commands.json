@@ -1,26 +1,86 @@
 [
-{
-  "directory": "/home/andrew/Desktop/new_proxy_bost",
-  "command": "/usr/bin/c++ -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/andrew/Desktop/new_proxy_bost/include  -o CMakeFiles/proxy-boost.dir/src/main.cpp.o -c /home/andrew/Desktop/new_proxy_bost/src/main.cpp",
-  "file": "/home/andrew/Desktop/new_proxy_bost/src/main.cpp",
-  "output": "CMakeFiles/proxy-boost.dir/src/main.cpp.o"
-},
-{
-  "directory": "/home/andrew/Desktop/new_proxy_bost",
-  "command": "/usr/bin/c++ -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/andrew/Desktop/new_proxy_bost/include  -o CMakeFiles/proxy-boost.dir/src/server.cpp.o -c /home/andrew/Desktop/new_proxy_bost/src/server.cpp",
-  "file": "/home/andrew/Desktop/new_proxy_bost/src/server.cpp",
-  "output": "CMakeFiles/proxy-boost.dir/src/server.cpp.o"
-},
-{
-  "directory": "/home/andrew/Desktop/new_proxy_bost",
-  "command": "/usr/bin/c++ -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/andrew/Desktop/new_proxy_bost/include  -o CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o -c /home/andrew/Desktop/new_proxy_bost/src/device_handler.cpp",
-  "file": "/home/andrew/Desktop/new_proxy_bost/src/device_handler.cpp",
-  "output": "CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o"
-},
-{
-  "directory": "/home/andrew/Desktop/new_proxy_bost",
-  "command": "/usr/bin/c++ -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/home/andrew/Desktop/new_proxy_bost/include  -o CMakeFiles/proxy-boost.dir/src/client_session.cpp.o -c /home/andrew/Desktop/new_proxy_bost/src/client_session.cpp",
-  "file": "/home/andrew/Desktop/new_proxy_bost/src/client_session.cpp",
-  "output": "CMakeFiles/proxy-boost.dir/src/client_session.cpp.o"
-}
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-DBOOST_ATOMIC_DYN_LINK",
+      "-DBOOST_ATOMIC_NO_LIB",
+      "-DBOOST_FILESYSTEM_DYN_LINK",
+      "-DBOOST_FILESYSTEM_NO_LIB",
+      "-DBOOST_PROGRAM_OPTIONS_DYN_LINK",
+      "-DBOOST_PROGRAM_OPTIONS_NO_LIB",
+      "-DBOOST_SYSTEM_DYN_LINK",
+      "-DBOOST_SYSTEM_NO_LIB",
+      "-I/home/andrew/Desktop/proxy/new_proxy_bost/include",
+      "-c",
+      "-o",
+      "CMakeFiles/proxy-boost.dir/src/main.cpp.o",
+      "/home/andrew/Desktop/proxy/new_proxy_bost/src/main.cpp"
+    ],
+    "directory": "/home/andrew/Desktop/proxy/new_proxy_bost/build",
+    "file": "/home/andrew/Desktop/proxy/new_proxy_bost/src/main.cpp",
+    "output": "/home/andrew/Desktop/proxy/new_proxy_bost/build/CMakeFiles/proxy-boost.dir/src/main.cpp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-DBOOST_ATOMIC_DYN_LINK",
+      "-DBOOST_ATOMIC_NO_LIB",
+      "-DBOOST_FILESYSTEM_DYN_LINK",
+      "-DBOOST_FILESYSTEM_NO_LIB",
+      "-DBOOST_PROGRAM_OPTIONS_DYN_LINK",
+      "-DBOOST_PROGRAM_OPTIONS_NO_LIB",
+      "-DBOOST_SYSTEM_DYN_LINK",
+      "-DBOOST_SYSTEM_NO_LIB",
+      "-I/home/andrew/Desktop/proxy/new_proxy_bost/include",
+      "-c",
+      "-o",
+      "CMakeFiles/proxy-boost.dir/src/server.cpp.o",
+      "/home/andrew/Desktop/proxy/new_proxy_bost/src/server.cpp"
+    ],
+    "directory": "/home/andrew/Desktop/proxy/new_proxy_bost/build",
+    "file": "/home/andrew/Desktop/proxy/new_proxy_bost/src/server.cpp",
+    "output": "/home/andrew/Desktop/proxy/new_proxy_bost/build/CMakeFiles/proxy-boost.dir/src/server.cpp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-DBOOST_ATOMIC_DYN_LINK",
+      "-DBOOST_ATOMIC_NO_LIB",
+      "-DBOOST_FILESYSTEM_DYN_LINK",
+      "-DBOOST_FILESYSTEM_NO_LIB",
+      "-DBOOST_PROGRAM_OPTIONS_DYN_LINK",
+      "-DBOOST_PROGRAM_OPTIONS_NO_LIB",
+      "-DBOOST_SYSTEM_DYN_LINK",
+      "-DBOOST_SYSTEM_NO_LIB",
+      "-I/home/andrew/Desktop/proxy/new_proxy_bost/include",
+      "-c",
+      "-o",
+      "CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o",
+      "/home/andrew/Desktop/proxy/new_proxy_bost/src/device_handler.cpp"
+    ],
+    "directory": "/home/andrew/Desktop/proxy/new_proxy_bost/build",
+    "file": "/home/andrew/Desktop/proxy/new_proxy_bost/src/device_handler.cpp",
+    "output": "/home/andrew/Desktop/proxy/new_proxy_bost/build/CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-DBOOST_ATOMIC_DYN_LINK",
+      "-DBOOST_ATOMIC_NO_LIB",
+      "-DBOOST_FILESYSTEM_DYN_LINK",
+      "-DBOOST_FILESYSTEM_NO_LIB",
+      "-DBOOST_PROGRAM_OPTIONS_DYN_LINK",
+      "-DBOOST_PROGRAM_OPTIONS_NO_LIB",
+      "-DBOOST_SYSTEM_DYN_LINK",
+      "-DBOOST_SYSTEM_NO_LIB",
+      "-I/home/andrew/Desktop/proxy/new_proxy_bost/include",
+      "-c",
+      "-o",
+      "CMakeFiles/proxy-boost.dir/src/client_session.cpp.o",
+      "/home/andrew/Desktop/proxy/new_proxy_bost/src/client_session.cpp"
+    ],
+    "directory": "/home/andrew/Desktop/proxy/new_proxy_bost/build",
+    "file": "/home/andrew/Desktop/proxy/new_proxy_bost/src/client_session.cpp",
+    "output": "/home/andrew/Desktop/proxy/new_proxy_bost/build/CMakeFiles/proxy-boost.dir/src/client_session.cpp.o"
+  }
 ]

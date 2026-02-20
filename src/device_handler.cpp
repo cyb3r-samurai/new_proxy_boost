@@ -22,14 +22,14 @@
 #include <iterator>
 
 DeviceHandler::DeviceHandler(boost::asio::io_context & ctx,
-        const boost::asio::ip::tcp::endpoint& device_endpoint) 
+        const boost::asio::ip::tcp::endpoint& device_endpoint)
     : ctx_(ctx)
       , strand_(boost::asio::make_strand(ctx.get_executor()))
       , device_endpoint_(device_endpoint)
       , device_socket_(strand_)
       , timer_ (strand_)
       ,timer_timeout_(strand_)
-    { 
+    {
    //     connect_to_device();
     }
 
@@ -38,29 +38,30 @@ void DeviceHandler::start() {
 }
 
 
-void DeviceHandler::async_write_read(uint16_t request_count, const std::vector<uint8_t>& data,
+void DeviceHandler::async_write_read(uint16_t request_count,std::vector<uint16_t> tids, const std::vector<uint8_t>& data,
 		std::function<void(boost::system::error_code ec, std::vector<uint8_t>)> callback) {
 
 	boost::asio::async_write (
 			device_socket_,
 			boost::asio::buffer(data),
 
-			[self = shared_from_this(), callback, request_count] (boost::system::error_code ec, std::size_t) {
+			[self = shared_from_this(), callback, request_count,tids] (boost::system::error_code ec, std::size_t) {
                 if (ec) {
                     self->finish_processing();
                     callback(ec, {});
                     return;
                 }
 
-				self->async_read_n_responses(request_count, callback);
+				self->async_read_n_responses(request_count,tids, callback);
 			}
 			);
 
 
 
 }
-void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function<void(boost::system::error_code ec,
+void DeviceHandler::async_read_n_responses(uint16_t request_count,std::vector<uint16_t> tids, std::function<void(boost::system::error_code ec,
             std::vector<uint8_t>)> callback) {
+    std::cerr << std::endl << "new async read started" << std::endl;
   auto responses = std::make_shared<std::vector<uint8_t>>();
     auto header_buf = std::make_shared<std::vector<uint8_t>>(6);
     auto current_response = std::make_shared<std::vector<uint8_t>>();
@@ -79,8 +80,11 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
         if (*is_completed) return;
         *is_completed = true;
         self->device_socket_.cancel();
-        callback(boost::system::error_code(), *responses);
-	self->finish_processing();
+        std::cerr << "timer_timeout_ callback called"<<" responses size:"<< responses->size() << std::endl;
+        if (responses->size() > 0) {
+            callback(boost::system::error_code(), *responses);
+        }
+	    self->finish_processing();
     });
 
     // Create a recursive lambda using a shared state object
@@ -93,25 +97,27 @@ void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function
     read_state.current_response = current_response;
     read_state.callback = callback;
     read_state.iPtr = iPtr;
+    read_state.tids = tids;
 
     // Start reading responses
     read_state.read_next();
 }
 
 
-void DeviceHandler::push_reqest(uint16_t request_count, std::vector<uint8_t>
+void DeviceHandler::push_reqest(uint16_t request_count, std::vector<uint16_t> tids, std::vector<uint8_t>
 		data, std::function<void(boost::system::error_code,std::vector<uint8_t>)>callback) {
 
 	{
 		std::lock_guard<std::mutex> lock(queue_mutex_);
 		Request r;
+        r.tids = tids;
 		r.data = data;
 		r.callback = callback;
 		r.request_count = request_count;
 		request_queue_.push(r);
 	}
 
-	boost::asio::post(strand_, 
+	boost::asio::post(strand_,
 			[self = shared_from_this()]() {
 				self->process_next_request();
 			});
@@ -128,7 +134,7 @@ void DeviceHandler::connect_to_device(){
 		    self->process_next_request();
                    // self->try_send_request();
                 } else {
-           //         self->retry_connection(); 
+           //         self->retry_connection();
                 }
             });
 }
@@ -154,6 +160,7 @@ void DeviceHandler::process_next_request() {
 		boost::asio::post(strand_, [self= shared_from_this()]() {
 			self->process_next_request();
 		});
+	std::cerr << std::endl << "we in process next request return"<< std::endl;
 		return;
 	}
 	if (is_processing_) {
@@ -164,10 +171,11 @@ void DeviceHandler::process_next_request() {
 	std::function<void(boost::system::error_code ec, std::vector<uint8_t>)> callback;
 	std::vector<uint8_t> data;
 	uint16_t request_count;
+    std::vector<uint16_t> tids;
 	{
 
 	    std::lock_guard<std::mutex> lock(queue_mutex_);
-		
+
         if(request_queue_.empty()){
 			return;
 		}
@@ -177,6 +185,7 @@ void DeviceHandler::process_next_request() {
 	    data = request.data;
 	    callback = request.callback;
 	    request_count = request.request_count;
+        tids  = request.tids;
 	    is_processing_ = true;
 
 	}
@@ -187,7 +196,7 @@ void DeviceHandler::process_next_request() {
         retry_connection();
         return;
     }
-	async_write_read(request_count, data, callback);
+	async_write_read(request_count, tids, data, callback);
 
 }
 

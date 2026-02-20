@@ -21,7 +21,7 @@ namespace fs  = boost::filesystem;
 
 std::string getDefaultConfigPath() {
     const char* homeDir = getenv("HOME");
-    if (!homeDir) { 
+    if (!homeDir) {
         throw std::runtime_error("Не удалось определить домашнюю директорию");
     }
     fs::path  configDir  = fs::path(homeDir)/".config"/ "modbus-proxy";
@@ -80,7 +80,7 @@ int  main (int argc, char* argv[]) {
         opt::store(opt::parse_config_file(configFile, configOptions), vm);
     }
 
-    opt::store(opt::command_line_parser(argc, argv).options(cmdlineOptions).run(),vm); 
+    opt::store(opt::command_line_parser(argc, argv).options(cmdlineOptions).run(),vm);
     opt::notify(vm);
 
     if (vm.count("help")) {
@@ -105,7 +105,7 @@ int  main (int argc, char* argv[]) {
 
         }
 
-        boost::asio::io_context ctx; 
+        boost::asio::io_context ctx;
 
         std::vector<boost::asio::ip::tcp::endpoint> devices_endpoints;
         std::vector<std::unique_ptr<Server>> servers;

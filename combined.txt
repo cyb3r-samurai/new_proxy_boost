@@ -1,0 +1,741 @@
+////////////////////////////////modbus-proxy////////////////////////////////////
+// ===========================================
+// File: ./include/server.h
+// ===========================================
+#pragma once
+
+#include "client_session.h"
+#include <device_handler.h>
+#include<boost/asio/io_context.hpp>
+#include<boost/asio/ip/tcp.hpp>
+#include <memory>
+#include <unordered_set>
+
+
+
+
+class Server {
+public:
+    Server(boost::asio::io_context& ctx, unsigned short port,
+            std::shared_ptr<DeviceHandler> device_handler);
+
+private:
+    void accept_connection();
+
+    std::unordered_set<std::shared_ptr<ClientSession>> sessions_;
+    boost::asio::ip::tcp::acceptor acceptor_;
+    std::shared_ptr<DeviceHandler> device_handler_;
+};
+
+
+// ===========================================
+// File: ./include/client_session.h
+// ===========================================
+#pragma once
+
+#include "device_handler.h"
+#include <array>
+#include <algorithm>
+#include <boost/asio/dispatch.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/system/detail/error_code.hpp>
+#include <cstdint>
+#include <functional>
+#include <memory>
+#include <iostream>
+
+#include <vector>
+class ClientSession : std::enable_shared_from_this<ClientSession> {
+public:
+    static std::shared_ptr<ClientSession> start (boost::asio::ip::tcp::socket  client_sock,
+            std::shared_ptr<DeviceHandler> device_handler) {
+
+        auto session = std::shared_ptr<ClientSession>(
+                new ClientSession(std::move(client_sock), device_handler));
+
+        boost::asio::post(session->client_sock_.get_executor(),
+                    [session] {session->read_full_message(session);});
+        return session;
+    }
+    void set_cleanup_callback(std::function<void()> cb) {cleanup_cb = std::move(cb); }
+
+    ~ClientSession();
+
+
+private:
+    ClientSession(boost::asio::ip::tcp::socket client_sock, 
+            std::shared_ptr<DeviceHandler> device_handler);
+    void send_to_client(std::shared_ptr<ClientSession> self,std::vector<uint8_t>& response);
+    void handle_error(boost::system::error_code ec);
+    void read_full_message(std::shared_ptr<ClientSession> self);
+    void calculate_request_count(std::shared_ptr<ClientSession> self, std::shared_ptr<std::vector<uint8_t>>, size_t bytes_readed);
+    
+    std::function<void()> cleanup_cb;
+
+    boost::asio::ip::tcp::socket client_sock_;
+    std::shared_ptr<DeviceHandler> device_handler_;
+    TransactionId tid;
+};
+
+
+// ===========================================
+// File: ./include/device_handler.h
+// ===========================================
+#pragma once
+
+#include <device_handler.h>
+
+#include <boost/asio/buffer.hpp>
+#include <boost/asio/connect.hpp>
+#include <boost/asio/deadline_timer.hpp>
+#include <boost/asio/steady_timer.hpp>
+#include <boost/asio/write.hpp>
+#include <boost/asio/read.hpp>
+#include <boost/asio/io_context.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/strand.hpp>
+#include <boost/asio/error.hpp>
+
+#include <boost/date_time/posix_time/posix_time_config.hpp>
+#include <boost/date_time/posix_time/posix_time_duration.hpp>
+#include <boost/system//error_code.hpp>
+#include <boost/system/detail/error_code.hpp>
+
+#include <atomic>
+#include <algorithm>
+#include <array>
+#include <cstdint>
+#include <chrono>
+#include <iostream>
+#include <functional>
+#include <memory>
+#include <mutex>
+#include <queue>
+
+using TransactionId = uint16_t;
+
+class DeviceHandler : public std::enable_shared_from_this<DeviceHandler> {
+public:
+    static std::shared_ptr<DeviceHandler>create(
+            boost::asio::io_context& ctx,
+            const boost::asio::ip::tcp::endpoint& device_endpoint) {
+            std::shared_ptr<DeviceHandler> handler(new DeviceHandler(ctx, device_endpoint));
+
+            boost::asio::post(handler->strand_, [handler] {handler->connect_to_device();});
+            return handler;
+    };
+             
+    void start();
+    void enqueue_request(TransactionId tid,
+                        std::vector<uint8_t> request,
+                        std::function<void(std::array<uint8_t, 256>)>callback);
+void push_reqest(uint16_t request_count, std::vector<uint8_t>
+		request, std::function<void(boost::system::error_code,std::vector<uint8_t>)>callback);
+    
+
+private:
+  struct ReadState {
+        std::weak_ptr<DeviceHandler> weak_self;
+        uint16_t request_count;
+        std::shared_ptr<bool> is_completed;
+        std::shared_ptr<std::vector<uint8_t>> responses;
+        std::shared_ptr<std::vector<uint8_t>> header_buf;
+        std::shared_ptr<std::vector<uint8_t>> current_response;
+        std::function<void(boost::system::error_code ec, std::vector<uint8_t>)> callback;
+        std::shared_ptr<uint16_t> iPtr;
+
+        void read_next() {
+            auto self = weak_self.lock();
+            if (!self){
+		    std::cerr << "retrun !self"; return;
+	    }
+            if (*is_completed) return;
+
+            if (*iPtr >= request_count) {
+                *is_completed = true;
+                self->timer_timeout_.cancel();
+                callback(boost::system::error_code(), *responses);
+		self->finish_processing();
+                return;
+            }
+
+            boost::asio::async_read(
+                self->device_socket_,
+                boost::asio::buffer(*header_buf),
+                [self, this](boost::system::error_code ec, std::size_t) mutable {
+                    if (!self) return;
+
+                    if (*is_completed) return;
+                    if (ec) {
+                        *is_completed = true;
+                        self->timer_timeout_.cancel();
+                        callback(ec, {});
+			self->finish_processing();
+                        return;
+                    }
+
+		    std::cerr << std::endl << "header reaaded ";
+                    size_t payload_len = ((*header_buf)[4] << 8) | (*header_buf)[5];
+		    std::cerr << payload_len << std::endl;
+                    current_response->resize(6 + payload_len);
+                    std::copy_n(header_buf->begin(), 6, current_response->begin());
+
+                    boost::asio::async_read(
+                        self->device_socket_,
+                        boost::asio::buffer(current_response->data() + 6, payload_len),
+                        [self, this](boost::system::error_code ec, std::size_t bytes_read) mutable {
+                            if (!self) return;
+
+                            if (*is_completed) return;
+                            if (ec) {
+                                *is_completed = true;
+                                self->timer_timeout_.cancel();
+                                callback(ec, {});
+				self->finish_processing();
+                                return;
+                            }
+
+                            std::copy(current_response->begin(), 
+                                    current_response->begin() + 6 + bytes_read, 
+                                    std::back_inserter(*responses));
+                            (*iPtr)++;
+
+                            // Continue reading next response recursively
+                            read_next();
+                        });
+                });
+        }
+    };
+    DeviceHandler(boost::asio::io_context& ctx,
+                 const boost::asio::ip::tcp::endpoint& device_endpoint);
+    struct Request {
+        std::vector<uint8_t> data;
+        std::function<void(boost::system::error_code, std::vector<uint8_t>)> callback;
+	uint16_t request_count;
+    };
+//    const size_t max_depth = 3;
+    size_t depth = 0;
+//    uint16_t i = 0;
+    
+     boost::posix_time::time_duration timeout_ = boost::posix_time::milliseconds(200);
+    
+    void async_write_read(uint16_t request_count, const std::vector<uint8_t>& data, std::function<void(boost::system::error_code,
+                std::vector<uint8_t>)>callback);
+    void async_read_n_responses(uint16_t request_count, std::function<void(boost::system::error_code,
+                std::vector<uint8_t>)>callback);
+    void connect_to_device();
+    void process_next_request();
+    void try_send_request();
+    void handle_device_error(boost::system::error_code ec);
+    void retry_connection();
+    void handle_request_error( boost::system::error_code ec);
+    void finish_processing();
+    
+//    std::function<void()>read_next;
+    boost::asio::strand<boost::asio::io_context::executor_type> strand_;
+    boost::asio::io_context& ctx_;
+    boost::asio::ip::tcp::endpoint device_endpoint_;
+    boost::asio::ip::tcp::socket device_socket_;
+    boost::asio::steady_timer timer_;
+    bool is_connected_ = false;
+    boost::asio::deadline_timer timer_timeout_;
+
+
+    ReadState read_state;
+    std::atomic<bool> is_processing_ = false;
+    std::mutex queue_mutex_;
+    std::queue<Request> request_queue_;
+};
+
+
+// ===========================================
+// File: ./src/client_session.cpp
+// ===========================================
+#include <array>
+#include <boost/asio/write.hpp>
+#include <boost/system/detail/error_code.hpp>
+#include <boost/system/error_code.hpp>
+#include <client_session.h>
+#include <cstdint>
+#include <iostream>
+#include <memory>
+
+ClientSession::ClientSession(boost::asio::ip::tcp::socket clien_sock,
+            std::shared_ptr<DeviceHandler> device_handler ) 
+            : client_sock_(std::move(clien_sock))
+            ,  device_handler_(device_handler) {}
+
+
+
+
+void ClientSession::read_full_message(std::shared_ptr<ClientSession> self) {
+    std::cout << "read_full_message_called";
+    
+    auto message_ = std::make_shared<std::vector<uint8_t>>();
+    message_->resize(1100);
+    client_sock_.async_read_some(boost::asio::buffer(*message_),
+            [this, self, message_](boost::system::error_code ec, size_t bytes_read ){
+
+                if(ec || bytes_read < 6) {
+                    handle_error(ec);
+                    return;
+                }
+
+                calculate_request_count(self, message_, bytes_read);
+                });
+
+}
+
+void ClientSession::calculate_request_count(std::shared_ptr<ClientSession> self,
+        std::shared_ptr<std::vector<uint8_t>> message, size_t bytes_readed) {
+//	std::cout << bytes_readed << std::endl;
+    uint16_t bytes_reaminning = bytes_readed;
+    uint16_t request_count = 0;
+    auto lamda = [](std::array<uint8_t, 6> header)  -> uint16_t{
+        return static_cast<uint16_t>(header[4] << 8 | header[5]);
+    };  
+    uint16_t current_index = 0;
+    while (bytes_reaminning > 0) {
+        std::array<uint8_t, 6> header;
+        std::copy(message->begin() + current_index, message->begin() + current_index + 6,
+                header.begin());
+        uint16_t pdu_len  = lamda(header);
+        //	    std::cout << pdu_len <<std::endl;
+        request_count++;
+        current_index = current_index + pdu_len + 6;
+        bytes_reaminning = bytes_reaminning - pdu_len - 6;
+        std::cout << "one request readed";
+    }
+    message->resize(bytes_readed);
+    std::cout << "we in ready to send push_request";
+    std::cout << bytes_reaminning << " " << request_count<< std::endl;
+    std::cout << "we in ready to send push_request";
+    device_handler_->push_reqest(request_count, *message,
+            [this,self](boost::system::error_code ec, std::vector<uint8_t> recponse) {
+                if (!ec) {
+                    send_to_client(self, recponse);
+            }
+    });
+}
+
+
+void ClientSession::send_to_client(std::shared_ptr<ClientSession> self, std::vector<uint8_t>& response) {
+	std::cerr << "we in send to client" << std::endl;
+	std::cerr << response.size() << std::endl;
+    //const uint16_t pdu_len = (response[4] << 8) | response[5];
+    //const size_t total_size = 6 + pdu_len;
+    //
+	boost::asio::ip::tcp::endpoint remote_ep = client_sock_.remote_endpoint();
+	std::cerr<< std::endl << "port " << (unsigned short)remote_ep.port() << std::endl;
+
+
+    boost::asio::async_write(client_sock_, boost::asio::buffer(response),
+        [this, self](boost::system::error_code ec, size_t){
+            if (!ec) read_full_message(self);
+        });
+}
+
+void ClientSession::handle_error(boost::system::error_code ec) {
+    if (ec !=  boost::asio::error::eof) {
+        std::cerr << "Client error: "<< ec.message() << "\n";
+    }
+    client_sock_.close();
+}
+
+ClientSession::~ClientSession() {
+    if(cleanup_cb) cleanup_cb();
+}
+
+
+// ===========================================
+// File: ./src/server.cpp
+// ===========================================
+#include "client_session.h"
+#include <boost/asio/io_context.hpp>
+#include <boost/system/error_code.hpp>
+#include <memory>
+#include <numeric>
+#include <server.h>
+
+Server::Server(boost::asio::io_context& ctx, unsigned short port, 
+        std::shared_ptr<DeviceHandler> device_handler) 
+        : acceptor_(ctx, {boost::asio::ip::tcp::v4(), port})
+        , device_handler_(device_handler) 
+    {
+        accept_connection();
+    }
+
+void Server::accept_connection() {
+    acceptor_.async_accept([this] (boost::system::error_code ec,
+            boost::asio::ip::tcp::socket clien_sock) {
+                if (!ec) {
+                    auto session = ClientSession::start(std::move(clien_sock), device_handler_);
+                    sessions_.insert(session);
+
+                    session->set_cleanup_callback([this, session] {
+                                sessions_.erase(session);
+                            });
+                }
+            accept_connection();
+    });
+}
+
+
+
+// ===========================================
+// File: ./src/main.cpp
+// ===========================================
+#include <device_handler.h>
+#include <client_session.h>
+#include <server.h>
+
+#include <boost/filesystem/path.hpp>
+#include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
+
+#include <exception>
+#include <fstream>
+#include <memory>
+#include <thread>
+#include <vector>
+#include <iostream>
+
+
+namespace opt = boost::program_options;
+namespace fs  = boost::filesystem;
+
+
+
+std::string getDefaultConfigPath() {
+    const char* homeDir = getenv("HOME");
+    if (!homeDir) { 
+        throw std::runtime_error("Не удалось определить домашнюю директорию");
+    }
+    fs::path  configDir  = fs::path(homeDir)/".config"/ "modbus-proxy";
+    fs::create_directory(configDir);
+    return (configDir / "proxy.conf").string();
+}
+
+void createDefaultConfig(const std::string& configPath) {
+    std::ofstream configFile(configPath);
+    std::vector<int> ports = {5020, 5021, 5022, 5023};
+    std::vector<std::string> ip = {"192.168.1.10", "192.168.1.11", "192.168.1.12", "192.168.1.13"};
+    if (configFile) {
+        configFile << " # Конфигуарационный файл приложения \n\n";
+        for (size_t i = 0; i <ip.size(); ++i) {
+            configFile << "deviceIP = ";
+            configFile << ip[i];
+            configFile << "\n";
+        }
+        for (size_t i = 0; i <ports.size(); ++i) {
+            configFile << "port = ";
+            configFile << ports[i];
+            configFile << "\n";
+        }
+        configFile << "\n";
+        std::cout << "Создан кофигурационный файл по умолчанию: "  << configPath << std::endl;
+    } else {
+        std::cerr << "Не удалось создать конфигурационный файл: "  << configPath << std::endl;
+    }
+
+}
+
+int  main (int argc, char* argv[]) {
+
+    opt::options_description cmdlineOptions("Комндная строка");
+
+    cmdlineOptions.add_options()
+        ("help", "Show help message")
+    ;
+
+    opt::options_description configOptions("Конфигурационные опции");
+    configOptions.add_options()
+        ("deviceIP", opt::value<std::vector<std::string>>()->multitoken()->required(),"IP адреса устройств")
+        ("port", opt::value<std::vector<int>>()->multitoken()->required(),"Порты на localhost для подключения к каждому устройству соответственно")
+    ;
+
+
+    opt::variables_map vm;
+
+    std::string configPath = getDefaultConfigPath();
+    if (!fs::exists(configPath)) {
+        createDefaultConfig(configPath);
+    }
+
+    std::ifstream configFile (configPath.c_str());
+    if (configFile) {
+        opt::store(opt::parse_config_file(configFile, configOptions), vm);
+    }
+
+    opt::store(opt::command_line_parser(argc, argv).options(cmdlineOptions).run(),vm); 
+    opt::notify(vm);
+
+    if (vm.count("help")) {
+        std::cout << cmdlineOptions<< "\n" << configOptions << std::endl;
+        return 0;
+    }
+
+    if (vm.count("deviceIP")) {
+        const std::vector<std::string> & devices  = vm ["deviceIP"].as<std::vector<std::string>>();
+        size_t num_devices = devices.size();
+
+        if (num_devices < 1 || num_devices  > 4) {
+            std::cerr << "Ошибка количество устройств должно быть от 1 до 4 получено " << num_devices  << std::endl;
+            return 1;
+        }
+
+        const std::vector<int> & ports = vm["port"].as<std::vector<int>>();
+        size_t num_ports = ports.size();
+        if (num_devices != num_ports) {
+            std::cerr << "Ошибка количетсво портов не совподает с количеством  устройств. Получено устройств " << num_devices <<" портов " << num_ports << std::endl;
+            return 1;
+
+        }
+
+        boost::asio::io_context ctx; 
+
+        std::vector<boost::asio::ip::tcp::endpoint> devices_endpoints;
+        std::vector<std::unique_ptr<Server>> servers;
+        std::vector<std::shared_ptr<DeviceHandler>> handlers;
+
+        for (size_t i = 0; i < num_devices; ++i){
+
+            boost::asio::ip::tcp::endpoint device_endpoint(
+                boost::asio::ip::make_address(devices[i]), 502
+            );
+
+            auto device_handler = DeviceHandler::create(ctx, device_endpoint);
+            handlers.push_back(device_handler);
+            servers.push_back(std::make_unique<Server>(ctx, ports[i], device_handler));
+            std::cerr << "\n"<< "Connections to " <<devices[i] << " accepting in 127.0.0.1:" << ports[i] << ".\n";
+        }
+        const int thread_count = 16;
+        std::vector<std::thread> threads;
+        for (int i = 0; i < thread_count; ++i) {
+            threads.emplace_back([&ctx]  {ctx.run();});
+        }
+
+        for (auto& t: threads) {
+            t.join();
+        }
+
+        return 0;
+    }
+    else {
+
+        std::cerr << "Ошибка не получены адреса устройств. " << std::endl;
+        return 1;
+    }
+
+    return 0;
+}
+
+
+// ===========================================
+// File: ./src/device_handler.cpp
+// ===========================================
+#include <boost/asio/buffer.hpp>
+#include <boost/asio/detail/is_buffer_sequence.hpp>
+#include <boost/asio/error.hpp>
+#include <boost/asio/io_context.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/strand.hpp>
+#include <boost/asio/deadline_timer.hpp>
+#include <boost/asio/write.hpp>
+#include <boost/asio/read.hpp>
+#include <boost/asio/connect.hpp>
+#include <boost/date_time/posix_time/posix_time_config.hpp>
+#include <boost/system/detail/error_code.hpp>
+#include <boost/system/error_code.hpp>
+#include <cstddef>
+#include <cstdint>
+#include <device_handler.h>
+#include <chrono>
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <algorithm>
+#include <iterator>
+
+DeviceHandler::DeviceHandler(boost::asio::io_context & ctx,
+        const boost::asio::ip::tcp::endpoint& device_endpoint) 
+    : ctx_(ctx)
+      , strand_(boost::asio::make_strand(ctx.get_executor()))
+      , device_endpoint_(device_endpoint)
+      , device_socket_(strand_)
+      , timer_ (strand_)
+      ,timer_timeout_(strand_)
+    { 
+   //     connect_to_device();
+    }
+
+void DeviceHandler::start() {
+    connect_to_device();
+}
+
+
+void DeviceHandler::async_write_read(uint16_t request_count, const std::vector<uint8_t>& data,
+		std::function<void(boost::system::error_code ec, std::vector<uint8_t>)> callback) {
+
+	boost::asio::async_write (
+			device_socket_,
+			boost::asio::buffer(data),
+
+			[self = shared_from_this(), callback, request_count] (boost::system::error_code ec, std::size_t) {
+                if (ec) {
+                    self->finish_processing();
+                    callback(ec, {});
+                    return;
+                }
+
+				self->async_read_n_responses(request_count, callback);
+			}
+			);
+
+
+
+}
+void DeviceHandler::async_read_n_responses(uint16_t request_count, std::function<void(boost::system::error_code ec,
+            std::vector<uint8_t>)> callback) {
+  auto responses = std::make_shared<std::vector<uint8_t>>();
+    auto header_buf = std::make_shared<std::vector<uint8_t>>(6);
+    auto current_response = std::make_shared<std::vector<uint8_t>>();
+    auto iPtr = std::make_shared<uint16_t>(0);
+    auto is_completed = std::make_shared<bool>(false);
+
+    // Use weak_ptr to avoid circular reference
+    std::weak_ptr<DeviceHandler> weak_self = shared_from_this();
+
+    timer_timeout_.expires_from_now(timeout_);
+    timer_timeout_.async_wait([weak_self, callback, is_completed, responses](const boost::system::error_code& ec) {
+        auto self = weak_self.lock();
+        if (!self) return;
+
+        if (ec == boost::asio::error::operation_aborted) return;
+        if (*is_completed) return;
+        *is_completed = true;
+        self->device_socket_.cancel();
+        callback(boost::system::error_code(), *responses);
+	self->finish_processing();
+    });
+
+    // Create a recursive lambda using a shared state object
+
+    read_state.weak_self = weak_self;
+    read_state.request_count = request_count;
+    read_state.is_completed = is_completed;
+    read_state.responses = responses;
+    read_state.header_buf = header_buf;
+    read_state.current_response = current_response;
+    read_state.callback = callback;
+    read_state.iPtr = iPtr;
+
+    // Start reading responses
+    read_state.read_next();
+}
+
+
+void DeviceHandler::push_reqest(uint16_t request_count, std::vector<uint8_t>
+		data, std::function<void(boost::system::error_code,std::vector<uint8_t>)>callback) {
+
+	{
+		std::lock_guard<std::mutex> lock(queue_mutex_);
+		Request r;
+		r.data = data;
+		r.callback = callback;
+		r.request_count = request_count;
+		request_queue_.push(r);
+	}
+
+	boost::asio::post(strand_, 
+			[self = shared_from_this()]() {
+				self->process_next_request();
+			});
+
+}
+
+void DeviceHandler::connect_to_device(){
+	std::cerr << "try to connnect to "<<device_endpoint_.address().to_string() << std::endl;
+    device_socket_.async_connect(device_endpoint_,
+            [self = shared_from_this()](boost::system::error_code ec){
+                if(!ec) {
+                    self->is_connected_ = true;
+                    std::cerr<< "\n" << "Connected to " << self->device_endpoint_.address() << ".\n";
+		    self->process_next_request();
+                   // self->try_send_request();
+                } else {
+           //         self->retry_connection(); 
+                }
+            });
+}
+
+
+void DeviceHandler::finish_processing() {
+	std::cerr << std::endl  << "we in finish processing" << std::endl;
+	is_processing_ = false;
+	process_next_request();
+}
+
+void DeviceHandler::handle_request_error( boost::system::error_code ec){
+
+    if (ec == boost::asio::error::eof || ec == boost::asio::error::connection_reset) {
+        retry_connection();
+    };
+
+}
+
+void DeviceHandler::process_next_request() {
+	std::cerr << std::endl << "we in process next request"<< std::endl;
+	if (!strand_.running_in_this_thread()) {
+		boost::asio::post(strand_, [self= shared_from_this()]() {
+			self->process_next_request();
+		});
+		return;
+	}
+	if (is_processing_) {
+	std::cerr << std::endl << "we in process next request return" <<std::endl;
+		return;
+	}
+
+	std::function<void(boost::system::error_code ec, std::vector<uint8_t>)> callback;
+	std::vector<uint8_t> data;
+	uint16_t request_count;
+	{
+
+	    std::lock_guard<std::mutex> lock(queue_mutex_);
+		
+        if(request_queue_.empty()){
+			return;
+		}
+
+	    auto request = request_queue_.front();
+	    request_queue_.pop();
+	    data = request.data;
+	    callback = request.callback;
+	    request_count = request.request_count;
+	    is_processing_ = true;
+
+	}
+
+    if(!device_socket_.is_open()) {
+        boost::system::error_code not_connected(boost::asio::error::not_connected);
+        if (callback) callback(not_connected, {});
+        retry_connection();
+        return;
+    }
+	async_write_read(request_count, data, callback);
+
+}
+
+void DeviceHandler::retry_connection() {
+    std::cerr << "\n" << "error recconnect to "<< this->device_endpoint_.address() << ".\n";
+    timer_.expires_after(std::chrono::seconds(5));
+    timer_.async_wait([self = shared_from_this()](boost::system::error_code) {
+            self->connect_to_device();
+            });
+}
+
+
+
+
+

@@ -1,6 +1,9 @@
-CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
- /home/andrew/Desktop/new_proxy_bost/src/device_handler.cpp \
- /usr/include/stdc-predef.h /usr/include/boost/asio/buffer.hpp \
+CMakeFiles/proxy-boost.dir/src/server.cpp.o: \
+ /home/andrew/Desktop/proxy/new_proxy_bost/src/server.cpp \
+ /usr/include/stdc-predef.h \
+ /home/andrew/Desktop/proxy/new_proxy_bost/include/client_session.h \
+ /home/andrew/Desktop/proxy/new_proxy_bost/include/device_handler.h \
+ /usr/include/boost/asio/buffer.hpp \
  /usr/include/boost/asio/detail/config.hpp /usr/include/boost/config.hpp \
  /usr/include/boost/config/user.hpp \
  /usr/include/boost/config/detail/select_compiler_config.hpp \
@@ -205,15 +208,58 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/asio/detail/pop_options.hpp \
  /usr/include/boost/detail/workaround.hpp \
  /usr/include/boost/asio/detail/is_buffer_sequence.hpp \
- /usr/include/boost/asio/io_context.hpp \
+ /usr/include/boost/asio/connect.hpp \
  /usr/include/boost/asio/async_result.hpp \
  /usr/include/boost/asio/detail/variadic_templates.hpp \
- /usr/include/boost/asio/detail/concurrency_hint.hpp \
- /usr/include/boost/asio/detail/noncopyable.hpp \
- /usr/include/boost/asio/detail/wrapped_handler.hpp \
- /usr/include/boost/asio/detail/bind_handler.hpp \
- /usr/include/boost/asio/associator.hpp \
+ /usr/include/boost/asio/basic_socket.hpp \
+ /usr/include/boost/asio/any_io_executor.hpp \
+ /usr/include/boost/asio/execution.hpp \
+ /usr/include/boost/asio/execution/allocator.hpp \
+ /usr/include/boost/asio/execution/executor.hpp \
+ /usr/include/boost/asio/execution/invocable_archetype.hpp \
+ /usr/include/boost/asio/traits/equality_comparable.hpp \
+ /usr/include/boost/asio/traits/execute_member.hpp \
+ /usr/include/boost/asio/execution/execute.hpp \
+ /usr/include/boost/asio/execution/detail/as_invocable.hpp \
+ /usr/include/boost/asio/detail/atomic_count.hpp \
+ /usr/include/c++/13/atomic \
+ /usr/include/boost/asio/execution/receiver_invocation_error.hpp \
+ /usr/include/boost/asio/execution/impl/receiver_invocation_error.ipp \
+ /usr/include/boost/asio/execution/set_done.hpp \
+ /usr/include/boost/asio/traits/set_done_member.hpp \
+ /usr/include/boost/asio/traits/set_done_free.hpp \
+ /usr/include/boost/asio/execution/set_error.hpp \
+ /usr/include/boost/asio/traits/set_error_member.hpp \
+ /usr/include/boost/asio/traits/set_error_free.hpp \
+ /usr/include/boost/asio/execution/set_value.hpp \
+ /usr/include/boost/asio/traits/set_value_member.hpp \
+ /usr/include/boost/asio/traits/set_value_free.hpp \
+ /usr/include/boost/asio/execution/detail/as_receiver.hpp \
+ /usr/include/boost/asio/traits/execute_free.hpp \
+ /usr/include/boost/asio/execution/scheduler.hpp \
+ /usr/include/boost/asio/execution/schedule.hpp \
+ /usr/include/boost/asio/traits/schedule_member.hpp \
+ /usr/include/boost/asio/traits/schedule_free.hpp \
+ /usr/include/boost/asio/execution/sender.hpp \
+ /usr/include/boost/asio/execution/detail/void_receiver.hpp \
+ /usr/include/boost/asio/execution/receiver.hpp \
+ /usr/include/boost/asio/execution/connect.hpp \
+ /usr/include/boost/asio/execution/detail/as_operation.hpp \
+ /usr/include/boost/asio/traits/start_member.hpp \
+ /usr/include/boost/asio/execution/operation_state.hpp \
+ /usr/include/boost/asio/execution/start.hpp \
+ /usr/include/boost/asio/traits/start_free.hpp \
+ /usr/include/boost/asio/traits/connect_member.hpp \
+ /usr/include/boost/asio/traits/connect_free.hpp \
+ /usr/include/boost/asio/is_applicable_property.hpp \
+ /usr/include/boost/asio/traits/query_static_constexpr_member.hpp \
+ /usr/include/boost/asio/traits/static_query.hpp \
+ /usr/include/boost/asio/execution/any_executor.hpp \
+ /usr/include/boost/asio/detail/assert.hpp /usr/include/boost/assert.hpp \
+ /usr/include/assert.h /usr/include/boost/asio/detail/cstddef.hpp \
+ /usr/include/boost/asio/detail/executor_function.hpp \
  /usr/include/boost/asio/detail/handler_alloc_helpers.hpp \
+ /usr/include/boost/asio/detail/noncopyable.hpp \
  /usr/include/boost/asio/detail/recycling_allocator.hpp \
  /usr/include/boost/asio/detail/thread_context.hpp \
  /usr/include/c++/13/climits \
@@ -233,6 +279,7 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/asio/multiple_exceptions.hpp \
  /usr/include/boost/asio/impl/multiple_exceptions.ipp \
  /usr/include/boost/asio/associated_allocator.hpp \
+ /usr/include/boost/asio/associator.hpp \
  /usr/include/boost/asio/detail/functional.hpp \
  /usr/include/c++/13/functional /usr/include/c++/13/bits/std_function.h \
  /usr/include/c++/13/unordered_map \
@@ -247,17 +294,35 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/c++/13/bits/uniform_int_dist.h \
  /usr/include/boost/asio/handler_alloc_hook.hpp \
  /usr/include/boost/asio/impl/handler_alloc_hook.ipp \
- /usr/include/boost/asio/detail/handler_cont_helpers.hpp \
- /usr/include/boost/asio/handler_continuation_hook.hpp \
  /usr/include/boost/asio/detail/handler_invoke_helpers.hpp \
  /usr/include/boost/asio/handler_invoke_hook.hpp \
+ /usr/include/boost/asio/detail/non_const_lvalue.hpp \
+ /usr/include/boost/asio/detail/scoped_ptr.hpp \
+ /usr/include/boost/asio/execution/bad_executor.hpp \
+ /usr/include/boost/asio/execution/impl/bad_executor.ipp \
+ /usr/include/boost/asio/execution/blocking.hpp \
+ /usr/include/boost/asio/prefer.hpp \
+ /usr/include/boost/asio/traits/prefer_free.hpp \
+ /usr/include/boost/asio/traits/prefer_member.hpp \
+ /usr/include/boost/asio/traits/require_free.hpp \
+ /usr/include/boost/asio/traits/require_member.hpp \
+ /usr/include/boost/asio/traits/static_require.hpp \
+ /usr/include/boost/asio/query.hpp \
+ /usr/include/boost/asio/traits/query_member.hpp \
+ /usr/include/boost/asio/traits/query_free.hpp \
+ /usr/include/boost/asio/require.hpp \
+ /usr/include/boost/asio/execution/blocking_adaptation.hpp \
+ /usr/include/boost/asio/detail/event.hpp \
+ /usr/include/boost/asio/detail/posix_event.hpp \
+ /usr/include/boost/asio/detail/impl/posix_event.ipp \
+ /usr/include/boost/asio/detail/throw_error.hpp \
  /usr/include/boost/system/error_code.hpp \
  /usr/include/boost/system/detail/error_code.hpp \
  /usr/include/boost/system/is_error_code_enum.hpp \
  /usr/include/boost/system/detail/error_category.hpp \
  /usr/include/boost/system/detail/config.hpp \
  /usr/include/boost/system/detail/requires_cxx11.hpp \
- /usr/include/boost/config/pragma_message.hpp /usr/include/c++/13/atomic \
+ /usr/include/boost/config/pragma_message.hpp \
  /usr/include/boost/system/detail/error_condition.hpp \
  /usr/include/boost/system/detail/generic_category.hpp \
  /usr/include/boost/system/detail/generic_category_message.hpp \
@@ -297,70 +362,6 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/system/generic_category.hpp \
  /usr/include/boost/system/system_category.hpp \
  /usr/include/boost/system/detail/throws.hpp \
- /usr/include/boost/asio/execution.hpp \
- /usr/include/boost/asio/execution/allocator.hpp \
- /usr/include/boost/asio/execution/executor.hpp \
- /usr/include/boost/asio/execution/invocable_archetype.hpp \
- /usr/include/boost/asio/traits/equality_comparable.hpp \
- /usr/include/boost/asio/traits/execute_member.hpp \
- /usr/include/boost/asio/execution/execute.hpp \
- /usr/include/boost/asio/execution/detail/as_invocable.hpp \
- /usr/include/boost/asio/detail/atomic_count.hpp \
- /usr/include/boost/asio/execution/receiver_invocation_error.hpp \
- /usr/include/boost/asio/execution/impl/receiver_invocation_error.ipp \
- /usr/include/boost/asio/execution/set_done.hpp \
- /usr/include/boost/asio/traits/set_done_member.hpp \
- /usr/include/boost/asio/traits/set_done_free.hpp \
- /usr/include/boost/asio/execution/set_error.hpp \
- /usr/include/boost/asio/traits/set_error_member.hpp \
- /usr/include/boost/asio/traits/set_error_free.hpp \
- /usr/include/boost/asio/execution/set_value.hpp \
- /usr/include/boost/asio/traits/set_value_member.hpp \
- /usr/include/boost/asio/traits/set_value_free.hpp \
- /usr/include/boost/asio/execution/detail/as_receiver.hpp \
- /usr/include/boost/asio/traits/execute_free.hpp \
- /usr/include/boost/asio/execution/scheduler.hpp \
- /usr/include/boost/asio/execution/schedule.hpp \
- /usr/include/boost/asio/traits/schedule_member.hpp \
- /usr/include/boost/asio/traits/schedule_free.hpp \
- /usr/include/boost/asio/execution/sender.hpp \
- /usr/include/boost/asio/execution/detail/void_receiver.hpp \
- /usr/include/boost/asio/execution/receiver.hpp \
- /usr/include/boost/asio/execution/connect.hpp \
- /usr/include/boost/asio/execution/detail/as_operation.hpp \
- /usr/include/boost/asio/traits/start_member.hpp \
- /usr/include/boost/asio/execution/operation_state.hpp \
- /usr/include/boost/asio/execution/start.hpp \
- /usr/include/boost/asio/traits/start_free.hpp \
- /usr/include/boost/asio/traits/connect_member.hpp \
- /usr/include/boost/asio/traits/connect_free.hpp \
- /usr/include/boost/asio/is_applicable_property.hpp \
- /usr/include/boost/asio/traits/query_static_constexpr_member.hpp \
- /usr/include/boost/asio/traits/static_query.hpp \
- /usr/include/boost/asio/execution/any_executor.hpp \
- /usr/include/boost/asio/detail/assert.hpp /usr/include/boost/assert.hpp \
- /usr/include/assert.h /usr/include/boost/asio/detail/cstddef.hpp \
- /usr/include/boost/asio/detail/executor_function.hpp \
- /usr/include/boost/asio/detail/non_const_lvalue.hpp \
- /usr/include/boost/asio/detail/scoped_ptr.hpp \
- /usr/include/boost/asio/execution/bad_executor.hpp \
- /usr/include/boost/asio/execution/impl/bad_executor.ipp \
- /usr/include/boost/asio/execution/blocking.hpp \
- /usr/include/boost/asio/prefer.hpp \
- /usr/include/boost/asio/traits/prefer_free.hpp \
- /usr/include/boost/asio/traits/prefer_member.hpp \
- /usr/include/boost/asio/traits/require_free.hpp \
- /usr/include/boost/asio/traits/require_member.hpp \
- /usr/include/boost/asio/traits/static_require.hpp \
- /usr/include/boost/asio/query.hpp \
- /usr/include/boost/asio/traits/query_member.hpp \
- /usr/include/boost/asio/traits/query_free.hpp \
- /usr/include/boost/asio/require.hpp \
- /usr/include/boost/asio/execution/blocking_adaptation.hpp \
- /usr/include/boost/asio/detail/event.hpp \
- /usr/include/boost/asio/detail/posix_event.hpp \
- /usr/include/boost/asio/detail/impl/posix_event.ipp \
- /usr/include/boost/asio/detail/throw_error.hpp \
  /usr/include/boost/asio/detail/impl/throw_error.ipp \
  /usr/include/boost/system/system_error.hpp /usr/include/c++/13/cassert \
  /usr/include/boost/asio/error.hpp /usr/include/boost/cerrno.hpp \
@@ -413,6 +414,14 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/asio/detail/impl/service_registry.hpp \
  /usr/include/boost/asio/detail/impl/service_registry.ipp \
  /usr/include/boost/asio/impl/execution_context.ipp \
+ /usr/include/boost/asio/impl/any_io_executor.ipp \
+ /usr/include/boost/asio/detail/io_object_impl.hpp \
+ /usr/include/boost/asio/io_context.hpp \
+ /usr/include/boost/asio/detail/concurrency_hint.hpp \
+ /usr/include/boost/asio/detail/wrapped_handler.hpp \
+ /usr/include/boost/asio/detail/bind_handler.hpp \
+ /usr/include/boost/asio/detail/handler_cont_helpers.hpp \
+ /usr/include/boost/asio/handler_continuation_hook.hpp \
  /usr/include/boost/asio/detail/chrono.hpp /usr/include/c++/13/chrono \
  /usr/include/boost/asio/detail/scheduler.hpp \
  /usr/include/boost/asio/detail/conditionally_enabled_event.hpp \
@@ -520,12 +529,6 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/asio/detail/work_dispatcher.hpp \
  /usr/include/boost/asio/executor_work_guard.hpp \
  /usr/include/boost/asio/impl/io_context.ipp \
- /usr/include/boost/asio/ip/tcp.hpp \
- /usr/include/boost/asio/basic_socket_acceptor.hpp \
- /usr/include/boost/asio/any_io_executor.hpp \
- /usr/include/boost/asio/impl/any_io_executor.ipp \
- /usr/include/boost/asio/basic_socket.hpp \
- /usr/include/boost/asio/detail/io_object_impl.hpp \
  /usr/include/boost/asio/post.hpp \
  /usr/include/boost/asio/detail/initiate_post.hpp \
  /usr/include/boost/asio/socket_base.hpp \
@@ -553,13 +556,12 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/asio/detail/reactive_socket_send_op.hpp \
  /usr/include/boost/asio/detail/reactive_wait_op.hpp \
  /usr/include/boost/asio/detail/impl/reactive_socket_service_base.ipp \
- /usr/include/boost/asio/basic_socket_iostream.hpp \
- /usr/include/c++/13/istream /usr/include/c++/13/bits/istream.tcc \
- /usr/include/boost/asio/basic_socket_streambuf.hpp \
- /usr/include/boost/asio/basic_stream_socket.hpp \
- /usr/include/boost/asio/steady_timer.hpp \
- /usr/include/boost/asio/basic_waitable_timer.hpp \
- /usr/include/boost/asio/detail/chrono_time_traits.hpp \
+ /usr/include/boost/asio/impl/connect.hpp /usr/include/c++/13/algorithm \
+ /usr/include/c++/13/pstl/glue_algorithm_defs.h \
+ /usr/include/boost/asio/detail/base_from_cancellation_state.hpp \
+ /usr/include/boost/asio/cancellation_state.hpp \
+ /usr/include/boost/asio/deadline_timer.hpp \
+ /usr/include/boost/asio/basic_deadline_timer.hpp \
  /usr/include/boost/asio/detail/deadline_timer_service.hpp \
  /usr/include/boost/asio/detail/timer_queue.hpp \
  /usr/include/boost/asio/detail/date_time_fwd.hpp \
@@ -596,8 +598,6 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/core/detail/sp_thread_pause.hpp \
  /usr/include/boost/core/detail/sp_thread_yield.hpp \
  /usr/include/boost/core/detail/sp_thread_sleep.hpp \
- /usr/include/c++/13/algorithm \
- /usr/include/c++/13/pstl/glue_algorithm_defs.h \
  /usr/include/boost/smart_ptr/detail/operator_bool.hpp \
  /usr/include/boost/smart_ptr/detail/local_sp_deleter.hpp \
  /usr/include/boost/smart_ptr/detail/local_counted_base.hpp \
@@ -667,7 +667,9 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/date_time/adjust_functors.hpp \
  /usr/include/boost/date_time/wrapping_int.hpp \
  /usr/include/boost/date_time/date_generators.hpp \
- /usr/include/c++/13/sstream /usr/include/c++/13/bits/sstream.tcc \
+ /usr/include/c++/13/sstream /usr/include/c++/13/istream \
+ /usr/include/c++/13/bits/istream.tcc \
+ /usr/include/c++/13/bits/sstream.tcc \
  /usr/include/boost/date_time/date_clock_device.hpp \
  /usr/include/boost/date_time/date_iterator.hpp \
  /usr/include/boost/date_time/time_system_split.hpp \
@@ -852,7 +854,23 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/asio/detail/timer_scheduler.hpp \
  /usr/include/boost/asio/detail/timer_scheduler_fwd.hpp \
  /usr/include/boost/asio/detail/wait_handler.hpp \
+ /usr/include/boost/asio/steady_timer.hpp \
+ /usr/include/boost/asio/basic_waitable_timer.hpp \
+ /usr/include/boost/asio/detail/chrono_time_traits.hpp \
  /usr/include/boost/asio/wait_traits.hpp \
+ /usr/include/boost/asio/write.hpp \
+ /usr/include/boost/asio/completion_condition.hpp \
+ /usr/include/boost/asio/basic_streambuf_fwd.hpp \
+ /usr/include/boost/asio/impl/write.hpp \
+ /usr/include/boost/asio/detail/base_from_completion_cond.hpp \
+ /usr/include/boost/asio/detail/consuming_buffers.hpp \
+ /usr/include/boost/asio/detail/dependent_type.hpp \
+ /usr/include/boost/asio/read.hpp /usr/include/boost/asio/impl/read.hpp \
+ /usr/include/boost/asio/ip/tcp.hpp \
+ /usr/include/boost/asio/basic_socket_acceptor.hpp \
+ /usr/include/boost/asio/basic_socket_iostream.hpp \
+ /usr/include/boost/asio/basic_socket_streambuf.hpp \
+ /usr/include/boost/asio/basic_stream_socket.hpp \
  /usr/include/boost/asio/ip/basic_endpoint.hpp \
  /usr/include/boost/asio/ip/address.hpp \
  /usr/include/boost/asio/ip/address_v4.hpp \
@@ -893,20 +911,11 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/asio/detail/strand_service.hpp \
  /usr/include/boost/asio/detail/impl/strand_service.hpp \
  /usr/include/boost/asio/detail/impl/strand_service.ipp \
- /usr/include/boost/asio/write.hpp \
- /usr/include/boost/asio/completion_condition.hpp \
- /usr/include/boost/asio/basic_streambuf_fwd.hpp \
- /usr/include/boost/asio/impl/write.hpp \
- /usr/include/boost/asio/detail/base_from_cancellation_state.hpp \
- /usr/include/boost/asio/cancellation_state.hpp \
- /usr/include/boost/asio/detail/base_from_completion_cond.hpp \
- /usr/include/boost/asio/detail/consuming_buffers.hpp \
- /usr/include/boost/asio/detail/dependent_type.hpp \
- /usr/include/boost/asio/read.hpp /usr/include/boost/asio/impl/read.hpp \
- /usr/include/boost/asio/connect.hpp \
- /usr/include/boost/asio/impl/connect.hpp \
- /home/andrew/Desktop/new_proxy_bost/include/device_handler.h \
- /usr/include/boost/system/error_code.hpp /usr/include/c++/13/queue \
+ /usr/include/c++/13/iostream /usr/include/c++/13/queue \
  /usr/include/c++/13/deque /usr/include/c++/13/bits/stl_deque.h \
  /usr/include/c++/13/bits/deque.tcc /usr/include/c++/13/bits/stl_queue.h \
- /usr/include/c++/13/iostream
+ /usr/include/c++/13/numeric /usr/include/c++/13/bits/stl_numeric.h \
+ /usr/include/c++/13/pstl/glue_numeric_defs.h \
+ /home/andrew/Desktop/proxy/new_proxy_bost/include/server.h \
+ /usr/include/c++/13/unordered_set \
+ /usr/include/c++/13/bits/unordered_set.h

@@ -8,7 +8,7 @@
 #include <memory>
 
 ClientSession::ClientSession(boost::asio::ip::tcp::socket clien_sock,
-            std::shared_ptr<DeviceHandler> device_handler ) 
+            std::shared_ptr<DeviceHandler> device_handler )
             : client_sock_(std::move(clien_sock))
             ,  device_handler_(device_handler) {}
 
@@ -17,7 +17,7 @@ ClientSession::ClientSession(boost::asio::ip::tcp::socket clien_sock,
 
 void ClientSession::read_full_message(std::shared_ptr<ClientSession> self) {
     std::cout << "read_full_message_called";
-    
+
     auto message_ = std::make_shared<std::vector<uint8_t>>();
     message_->resize(1100);
     client_sock_.async_read_some(boost::asio::buffer(*message_),
@@ -38,9 +38,11 @@ void ClientSession::calculate_request_count(std::shared_ptr<ClientSession> self,
 //	std::cout << bytes_readed << std::endl;
     uint16_t bytes_reaminning = bytes_readed;
     uint16_t request_count = 0;
-    auto lamda = [](std::array<uint8_t, 6> header)  -> uint16_t{
+    std::vector<uint16_t> tids;
+    auto lamda = [&tids](std::array<uint8_t, 6> header)  -> uint16_t{
+        tids.push_back(static_cast<uint16_t>(header[0] << 8) | header[1]);
         return static_cast<uint16_t>(header[4] << 8 | header[5]);
-    };  
+    };
     uint16_t current_index = 0;
     while (bytes_reaminning > 0) {
         std::array<uint8_t, 6> header;
@@ -57,7 +59,7 @@ void ClientSession::calculate_request_count(std::shared_ptr<ClientSession> self,
     std::cout << "we in ready to send push_request";
     std::cout << bytes_reaminning << " " << request_count<< std::endl;
     std::cout << "we in ready to send push_request";
-    device_handler_->push_reqest(request_count, *message,
+    device_handler_->push_reqest(request_count,tids, *message,
             [this,self](boost::system::error_code ec, std::vector<uint8_t> recponse) {
                 if (!ec) {
                     send_to_client(self, recponse);
