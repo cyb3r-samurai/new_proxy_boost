@@ -1313,6 +1313,21 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: /home/andrew/Desktop/proxy/
   /usr/include/boost/asio/write.hpp \
   /usr/include/boost/assert.hpp \
   /usr/include/boost/assert/source_location.hpp \
+  /usr/include/boost/bind.hpp \
+  /usr/include/boost/bind/arg.hpp \
+  /usr/include/boost/bind/bind.hpp \
+  /usr/include/boost/bind/bind_cc.hpp \
+  /usr/include/boost/bind/bind_mf2_cc.hpp \
+  /usr/include/boost/bind/bind_mf_cc.hpp \
+  /usr/include/boost/bind/detail/is_same.hpp \
+  /usr/include/boost/bind/detail/requires_cxx11.hpp \
+  /usr/include/boost/bind/detail/result_traits.hpp \
+  /usr/include/boost/bind/mem_fn.hpp \
+  /usr/include/boost/bind/mem_fn_cc.hpp \
+  /usr/include/boost/bind/mem_fn_template.hpp \
+  /usr/include/boost/bind/placeholders.hpp \
+  /usr/include/boost/bind/std_placeholders.hpp \
+  /usr/include/boost/bind/storage.hpp \
   /usr/include/boost/cerrno.hpp \
   /usr/include/boost/config.hpp \
   /usr/include/boost/config/compiler/gcc.hpp \
@@ -1324,6 +1339,7 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: /home/andrew/Desktop/proxy/
   /usr/include/boost/config/detail/suffix.hpp \
   /usr/include/boost/config/helper_macros.hpp \
   /usr/include/boost/config/no_tr1/cmath.hpp \
+  /usr/include/boost/config/no_tr1/memory.hpp \
   /usr/include/boost/config/platform/linux.hpp \
   /usr/include/boost/config/pragma_message.hpp \
   /usr/include/boost/config/stdlib/libstdcpp3.hpp \
@@ -1335,6 +1351,7 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: /home/andrew/Desktop/proxy/
   /usr/include/boost/core/detail/sp_thread_sleep.hpp \
   /usr/include/boost/core/detail/sp_thread_yield.hpp \
   /usr/include/boost/core/enable_if.hpp \
+  /usr/include/boost/core/ref.hpp \
   /usr/include/boost/core/yield_primitives.hpp \
   /usr/include/boost/cstdint.hpp \
   /usr/include/boost/current_function.hpp \
@@ -1387,6 +1404,8 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: /home/andrew/Desktop/proxy/
   /usr/include/boost/date_time/year_month_day.hpp \
   /usr/include/boost/detail/workaround.hpp \
   /usr/include/boost/exception/exception.hpp \
+  /usr/include/boost/get_pointer.hpp \
+  /usr/include/boost/is_placeholder.hpp \
   /usr/include/boost/limits.hpp \
   /usr/include/boost/mpl/and.hpp \
   /usr/include/boost/mpl/apply_wrap.hpp \
@@ -1632,6 +1651,7 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: /home/andrew/Desktop/proxy/
   /usr/include/boost/type_traits/is_same.hpp \
   /usr/include/boost/type_traits/remove_cv.hpp \
   /usr/include/boost/version.hpp \
+  /usr/include/boost/visit_each.hpp \
   /usr/include/c++/13/algorithm \
   /usr/include/c++/13/any \
   /usr/include/c++/13/array \
@@ -4497,8 +4517,6 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 
 /usr/include/boost/range/algorithm/equal.hpp:
 
-/usr/include/boost/program_options/value_semantic.hpp:
-
 /usr/include/boost/program_options/positional_options.hpp:
 
 /usr/include/boost/program_options/options_description.hpp:
@@ -4602,6 +4620,36 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 /usr/include/boost/mpl/aux_/arity_spec.hpp:
 
 /usr/include/boost/mpl/aux_/arg_typedef.hpp:
+
+/usr/include/boost/mpl/arg_fwd.hpp:
+
+/usr/include/boost/range/rend.hpp:
+
+/usr/include/boost/mpl/arg.hpp:
+
+/usr/include/boost/mpl/apply.hpp:
+
+/usr/include/boost/mpl/always.hpp:
+
+/usr/include/boost/move/detail/std_ns_end.hpp:
+
+/usr/include/boost/move/detail/std_ns_begin.hpp:
+
+/usr/include/boost/mem_fn.hpp:
+
+/usr/include/boost/lexical_cast/try_lexical_convert.hpp:
+
+/usr/include/boost/type_traits/is_constructible.hpp:
+
+/usr/include/boost/lexical_cast/detail/widest_char.hpp:
+
+/usr/include/boost/lexical_cast/detail/lcast_unsigned_converters.hpp:
+
+/usr/include/boost/preprocessor/seq/transform.hpp:
+
+/usr/include/boost/lexical_cast/detail/lcast_char_constants.hpp:
+
+/usr/include/boost/lexical_cast/detail/is_character.hpp:
 
 /usr/include/boost/preprocessor/logical/compl.hpp:
 
@@ -4714,8 +4762,6 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 /usr/include/boost/mpl/numeric_cast.hpp:
 
 /usr/include/boost/mpl/not.hpp:
-
-/usr/include/boost/mem_fn.hpp:
 
 /usr/include/boost/mpl/less.hpp:
 
@@ -4924,10 +4970,6 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 /usr/include/boost/core/yield_primitives.hpp:
 
 /usr/include/boost/asio/detail/impl/timer_queue_ptime.ipp:
-
-/usr/include/boost/type_traits/is_constructible.hpp:
-
-/usr/include/boost/lexical_cast/detail/widest_char.hpp:
 
 /usr/include/boost/io/detail/ostream_guard.hpp:
 
@@ -5299,13 +5341,15 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 
 /usr/include/boost/asio/basic_socket_acceptor.hpp:
 
+/usr/include/boost/mpl/apply_fwd.hpp:
+
+/usr/include/boost/asio/detail/conditionally_enabled_mutex.hpp:
+
 /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:
 
 /usr/include/boost/date_time/date_clock_device.hpp:
 
 /usr/include/boost/core/typeinfo.hpp:
-
-/usr/include/boost/move/detail/std_ns_begin.hpp:
 
 /usr/include/boost/preprocessor/identity.hpp:
 
@@ -5505,6 +5549,10 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 
 /usr/include/boost/asio/detail/pop_options.hpp:
 
+/usr/include/boost/program_options/value_semantic.hpp:
+
+/usr/include/boost/bind/std_placeholders.hpp:
+
 /usr/include/c++/13/bits/locale_classes.tcc:
 
 /usr/include/boost/mpl/aux_/preprocessed/gcc/times.hpp:
@@ -5540,10 +5588,6 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 /usr/include/boost/type_traits/remove_volatile.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:
-
-/usr/include/wchar.h:
-
-/usr/include/boost/asio/execution/impl/bad_executor.ipp:
 
 /usr/include/boost/asio/io_context.hpp:
 
@@ -5641,9 +5685,13 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 
 /usr/include/c++/13/tr1/bessel_function.tcc:
 
+/usr/include/boost/visit_each.hpp:
+
 /usr/include/boost/asio/ip/basic_resolver_results.hpp:
 
 /usr/include/boost/asio/ip/basic_resolver_query.hpp:
+
+/usr/include/boost/bind/bind_cc.hpp:
 
 /usr/include/c++/13/cctype:
 
@@ -5829,8 +5877,6 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
 
-/usr/include/boost/mpl/apply.hpp:
-
 /usr/include/boost/asio/detail/scheduler_thread_info.hpp:
 
 /usr/include/boost/asio/execution.hpp:
@@ -5900,8 +5946,6 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 /usr/include/boost/asio/detail/thread_info_base.hpp:
 
 /usr/include/boost/asio/execution/detail/as_operation.hpp:
-
-/usr/include/boost/lexical_cast/try_lexical_convert.hpp:
 
 /usr/include/boost/asio/ip/detail/impl/endpoint.ipp:
 
@@ -5986,14 +6030,6 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 /usr/include/boost/type_traits/is_arithmetic.hpp:
 
 /usr/include/boost/asio/detail/posix_global.hpp:
-
-/usr/include/boost/mpl/aux_/preprocessor/enum.hpp:
-
-/usr/include/boost/config/workaround.hpp:
-
-/usr/include/c++/13/bits/memory_resource.h:
-
-/usr/include/boost/asio/impl/any_io_executor.ipp:
 
 /usr/include/c++/13/unordered_set:
 
@@ -6105,9 +6141,9 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 
 /usr/include/boost/smart_ptr/detail/sp_nullptr_t.hpp:
 
-/usr/include/boost/smart_ptr/detail/sp_typeinfo_.hpp:
+/usr/include/boost/bind.hpp:
 
-/usr/include/boost/smart_ptr/detail/yield_k.hpp:
+/usr/include/boost/smart_ptr/detail/sp_typeinfo_.hpp:
 
 /usr/include/c++/13/tr1/ell_integral.tcc:
 
@@ -6120,6 +6156,8 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 /usr/include/boost/system/detail/enable_if.hpp:
 
 /usr/include/c++/13/bits/stl_tempbuf.h:
+
+/usr/include/boost/bind/placeholders.hpp:
 
 /usr/include/boost/asio/execution/start.hpp:
 
@@ -6275,8 +6313,6 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 
 /usr/include/c++/13/bits/move.h:
 
-/usr/include/boost/lexical_cast/detail/is_character.hpp:
-
 /usr/include/c++/13/bits/new_allocator.h:
 
 /usr/include/c++/13/bits/ostream.tcc:
@@ -6431,8 +6467,6 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 
 /usr/include/c++/13/ext/concurrence.h:
 
-/usr/include/boost/move/detail/std_ns_end.hpp:
-
 /usr/include/c++/13/ext/numeric_traits.h:
 
 /usr/include/boost/type_traits/is_same.hpp:
@@ -6470,8 +6504,6 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 /usr/include/x86_64-linux-gnu/bits/stat.h:
 
 /usr/include/c++/13/limits:
-
-/usr/include/boost/mpl/arg_fwd.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/waitflags.h:
 
@@ -6550,8 +6582,6 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 /usr/include/linux/close_range.h:
 
 /usr/include/linux/limits.h:
-
-/usr/include/boost/mpl/always.hpp:
 
 /usr/include/linux/posix_types.h:
 
@@ -6685,6 +6715,8 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 
 /usr/include/x86_64-linux-gnu/bits/posix_opt.h:
 
+/usr/include/boost/bind/bind.hpp:
+
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
 
 /usr/include/boost/asio/detail/reactive_socket_sendto_op.hpp:
@@ -6724,6 +6756,8 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 /usr/include/x86_64-linux-gnu/bits/statx.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdint-least.h:
+
+/usr/include/boost/bind/arg.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
 
@@ -6821,6 +6855,12 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 
 /usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
 
+/usr/include/wchar.h:
+
+/usr/include/boost/asio/execution/impl/bad_executor.ipp:
+
+/usr/include/boost/is_placeholder.hpp:
+
 /usr/include/boost/filesystem/detail/header.hpp:
 
 /usr/include/boost/core/scoped_enum.hpp:
@@ -6872,6 +6912,24 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 /usr/include/x86_64-linux-gnu/bits/timesize.h:
 
 /home/andrew/Desktop/proxy/new_proxy_bost/src/device_handler.cpp:
+
+/usr/include/boost/bind/bind_mf2_cc.hpp:
+
+/usr/include/boost/mpl/aux_/preprocessor/enum.hpp:
+
+/usr/include/boost/config/workaround.hpp:
+
+/usr/include/c++/13/bits/memory_resource.h:
+
+/usr/include/boost/asio/impl/any_io_executor.ipp:
+
+/usr/include/boost/bind/bind_mf_cc.hpp:
+
+/usr/include/boost/smart_ptr/detail/yield_k.hpp:
+
+/usr/include/boost/bind/detail/is_same.hpp:
+
+/usr/include/boost/bind/detail/result_traits.hpp:
 
 /usr/include/boost/config/stdlib/libstdcpp3.hpp:
 
@@ -6937,6 +6995,8 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 
 /usr/include/boost/function/detail/prologue.hpp:
 
+/usr/include/boost/bind/storage.hpp:
+
 /usr/include/boost/function/detail/requires_cxx11.hpp:
 
 /usr/include/boost/function/function1.hpp:
@@ -6973,8 +7033,6 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 
 /usr/include/boost/iterator/iterator_categories.hpp:
 
-/usr/include/boost/lexical_cast/detail/lcast_unsigned_converters.hpp:
-
 /usr/include/boost/iterator/iterator_facade.hpp:
 
 /usr/include/boost/lexical_cast.hpp:
@@ -6982,15 +7040,3 @@ CMakeFiles/proxy-boost.dir/src/server.cpp.o: /home/andrew/Desktop/proxy/new_prox
 /usr/include/boost/asio/detail/reactive_socket_recvfrom_op.hpp:
 
 /usr/include/boost/lexical_cast/detail/converter_numeric.hpp:
-
-/usr/include/boost/preprocessor/seq/transform.hpp:
-
-/usr/include/boost/lexical_cast/detail/lcast_char_constants.hpp:
-
-/usr/include/boost/asio/detail/conditionally_enabled_mutex.hpp:
-
-/usr/include/boost/mpl/apply_fwd.hpp:
-
-/usr/include/boost/range/rend.hpp:
-
-/usr/include/boost/mpl/arg.hpp:

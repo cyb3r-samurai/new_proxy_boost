@@ -906,7 +906,23 @@ CMakeFiles/proxy-boost.dir/src/device_handler.cpp.o: \
  /usr/include/boost/asio/detail/dependent_type.hpp \
  /usr/include/boost/asio/read.hpp /usr/include/boost/asio/impl/read.hpp \
  /usr/include/boost/asio/connect.hpp \
- /usr/include/boost/asio/impl/connect.hpp \
+ /usr/include/boost/asio/impl/connect.hpp /usr/include/boost/bind.hpp \
+ /usr/include/boost/bind/bind.hpp \
+ /usr/include/boost/bind/detail/requires_cxx11.hpp \
+ /usr/include/boost/bind/mem_fn.hpp /usr/include/boost/get_pointer.hpp \
+ /usr/include/boost/config/no_tr1/memory.hpp \
+ /usr/include/boost/bind/mem_fn_template.hpp \
+ /usr/include/boost/bind/mem_fn_cc.hpp \
+ /usr/include/boost/is_placeholder.hpp /usr/include/boost/bind/arg.hpp \
+ /usr/include/boost/bind/detail/result_traits.hpp \
+ /usr/include/boost/core/ref.hpp \
+ /usr/include/boost/bind/std_placeholders.hpp \
+ /usr/include/boost/visit_each.hpp \
+ /usr/include/boost/bind/detail/is_same.hpp \
+ /usr/include/boost/bind/storage.hpp /usr/include/boost/bind/bind_cc.hpp \
+ /usr/include/boost/bind/bind_mf_cc.hpp \
+ /usr/include/boost/bind/bind_mf2_cc.hpp \
+ /usr/include/boost/bind/placeholders.hpp \
  /home/andrew/Desktop/proxy/new_proxy_bost/include/device_handler.h \
  /usr/include/c++/13/iostream /usr/include/c++/13/queue \
  /usr/include/c++/13/deque /usr/include/c++/13/bits/stl_deque.h \
