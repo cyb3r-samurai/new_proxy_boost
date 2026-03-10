@@ -63,6 +63,8 @@ void ClientSession::calculate_request_count(std::shared_ptr<ClientSession> self,
             [this,self](boost::system::error_code ec, std::vector<uint8_t> recponse) {
                 if (!ec) {
                     send_to_client(self, recponse);
+            } else  {
+                read_full_message(self);
             }
     });
 }

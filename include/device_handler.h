@@ -37,7 +37,7 @@ public:
         boost::asio::io_context& ctx, const boost::asio::ip::tcp::endpoint& device_endpoint) {
         std::shared_ptr<DeviceHandler> handler(new DeviceHandler(ctx, device_endpoint));
 
-        boost::asio::post(handler->strand_, [handler] { handler->connect_to_device(); });
+        boost::asio::post(handler->strand_, [handler] { handler->start(); });
         return handler;
     };
 
@@ -47,6 +47,7 @@ public:
     void push_reqest(uint16_t request_count, std::vector<uint16_t> tids,
                      std::vector<uint8_t> request,
                      std::function<void(boost::system::error_code, std::vector<uint8_t>)> callback);
+    void cheack_deadline();
 
 private:
     struct ReadState {
@@ -59,6 +60,7 @@ private:
         std::function<void(boost::system::error_code ec, std::vector<uint8_t>)> callback;
         std::shared_ptr<uint16_t> iPtr;
         std::vector<uint16_t> tids;
+
 
         void read_next() {
             auto self = weak_self.lock();
@@ -86,10 +88,13 @@ private:
                     if (*is_completed)
                         return;
                     if (ec) {
+                        std::cerr << "errro message  in read header: " << ec.message()  << '\n';
                         *is_completed = true;
                         self->timer_timeout_.cancel();
                         callback(ec, {});
+                        self->device_socket_.close();
                         self->finish_processing();
+                      //  self->handle_request_error(ec);
                         return;
                     }
                     std::cerr << std::endl << "header reaaded ";
@@ -108,8 +113,10 @@ private:
                             if (*is_completed)
                                 return;
                             if (ec) {
+                                std::cerr << "errro message :  int read body/" << ec.message()  << '\n';
                                 *is_completed = true;
                                 self->timer_timeout_.cancel();
+                                self->device_socket_.close();
                                 callback(ec, {});
                                 self->finish_processing();
                                 return;
@@ -158,8 +165,7 @@ private:
     void retry_connection();
     void handle_request_error(boost::system::error_code ec);
     void finish_processing();
-
-    //    std::function<void()>read_next;
+//    std::function<void()>read_next;
     boost::asio::strand<boost::asio::io_context::executor_type> strand_;
     boost::asio::io_context& ctx_;
     boost::asio::ip::tcp::endpoint device_endpoint_;
@@ -167,6 +173,10 @@ private:
     boost::asio::steady_timer timer_;
     bool is_connected_ = false;
     boost::asio::deadline_timer timer_timeout_;
+    boost::asio::deadline_timer connect_timeout_timer_;
+
+
+    bool stopped_ = false;
 
     ReadState read_state;
     std::atomic<bool> is_processing_ = false;

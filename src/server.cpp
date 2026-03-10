@@ -5,10 +5,10 @@
 #include <numeric>
 #include <server.h>
 
-Server::Server(boost::asio::io_context& ctx, unsigned short port, 
-        std::shared_ptr<DeviceHandler> device_handler) 
+Server::Server(boost::asio::io_context& ctx, unsigned short port,
+        std::shared_ptr<DeviceHandler> device_handler)
         : acceptor_(ctx, {boost::asio::ip::tcp::v4(), port})
-        , device_handler_(device_handler) 
+        , device_handler_(device_handler)
     {
         accept_connection();
     }
