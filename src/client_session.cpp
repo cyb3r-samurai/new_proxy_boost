@@ -16,7 +16,6 @@ ClientSession::ClientSession(boost::asio::ip::tcp::socket clien_sock,
 
 
 void ClientSession::read_full_message(std::shared_ptr<ClientSession> self) {
-    std::cout << "read_full_message_called";
 
     auto message_ = std::make_shared<std::vector<uint8_t>>();
     message_->resize(1100);
@@ -53,12 +52,8 @@ void ClientSession::calculate_request_count(std::shared_ptr<ClientSession> self,
         request_count++;
         current_index = current_index + pdu_len + 6;
         bytes_reaminning = bytes_reaminning - pdu_len - 6;
-        std::cout << "one request readed";
     }
     message->resize(bytes_readed);
-    std::cout << "we in ready to send push_request";
-    std::cout << bytes_reaminning << " " << request_count<< std::endl;
-    std::cout << "we in ready to send push_request";
     device_handler_->push_reqest(request_count,tids, *message,
             [this,self](boost::system::error_code ec, std::vector<uint8_t> recponse) {
                 if (!ec) {
@@ -71,13 +66,10 @@ void ClientSession::calculate_request_count(std::shared_ptr<ClientSession> self,
 
 
 void ClientSession::send_to_client(std::shared_ptr<ClientSession> self, std::vector<uint8_t>& response) {
-	std::cerr << "we in send to client" << std::endl;
-	std::cerr << response.size() << std::endl;
     //const uint16_t pdu_len = (response[4] << 8) | response[5];
     //const size_t total_size = 6 + pdu_len;
     //
 	boost::asio::ip::tcp::endpoint remote_ep = client_sock_.remote_endpoint();
-	std::cerr<< std::endl << "port " << (unsigned short)remote_ep.port() << std::endl;
 
 
     boost::asio::async_write(client_sock_, boost::asio::buffer(response),

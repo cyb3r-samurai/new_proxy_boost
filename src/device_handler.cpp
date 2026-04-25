@@ -78,7 +78,7 @@ void DeviceHandler::async_write_read(
 void DeviceHandler::async_read_n_responses(
     uint16_t request_count, std::vector<uint16_t> tids,
     std::function<void(boost::system::error_code ec, std::vector<uint8_t>)> callback) {
-    std::cerr << std::endl << "new async read started" << std::endl;
+//    std::cerr << std::endl << "new async read started" << std::endl;
 
     auto responses = std::make_shared<std::vector<uint8_t>>();
     auto header_buf = std::make_shared<std::vector<uint8_t>>(6);
@@ -169,7 +169,6 @@ void DeviceHandler::connect_to_device() {
 }
 
 void DeviceHandler::finish_processing() {
-    std::cerr << std::endl << "we in finish processing" << std::endl;
     is_processing_ = false;
     process_next_request();
 }
@@ -182,14 +181,11 @@ void DeviceHandler::handle_request_error(boost::system::error_code ec) {
 }
 
 void DeviceHandler::process_next_request() {
-    std::cerr << std::endl << "we in process next request" << std::endl;
     if (!strand_.running_in_this_thread()) {
         boost::asio::post(strand_, [self = shared_from_this()]() { self->process_next_request(); });
-        std::cerr << std::endl << "we in process next request return" << std::endl;
         return;
     }
     if (is_processing_) {
-        std::cerr << std::endl << "we in process next request return" << std::endl;
         return;
     }
     if (!device_socket_.is_open()) {

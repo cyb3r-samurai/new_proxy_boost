@@ -97,9 +97,7 @@ private:
                       //  self->handle_request_error(ec);
                         return;
                     }
-                    std::cerr << std::endl << "header reaaded ";
                     size_t payload_len = ((*header_buf)[4] << 8) | (*header_buf)[5];
-                    std::cerr << payload_len << std::endl;
                     current_response->resize(6 + payload_len);
                     std::copy_n(header_buf->begin(), 6, current_response->begin());
 
