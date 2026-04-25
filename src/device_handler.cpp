@@ -60,6 +60,7 @@ void DeviceHandler::async_write_read(
                                  if (ec) {
                                      std::cerr << "error message in write: " << ec.message() << '\n';
                                      self->device_socket_.close();
+                                     callback(ec, {});
                                      std::cerr << "close socket_ \n";
                                      self->finish_processing();
                                 //     Request r;
@@ -107,6 +108,8 @@ void DeviceHandler::async_read_n_responses(
                       << std::endl;
             if (responses->size() > 0) {
                 callback(boost::system::error_code(), *responses);
+            } else  {
+                callback(ec, {});
             }
             self->finish_processing();
         });
