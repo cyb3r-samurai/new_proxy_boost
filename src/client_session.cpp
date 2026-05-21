@@ -47,6 +47,11 @@ void ClientSession::calculate_request_count(std::shared_ptr<ClientSession> self,
         std::array<uint8_t, 6> header;
         std::copy(message->begin() + current_index, message->begin() + current_index + 6,
                 header.begin());
+	if (header[2]!= 0 || header [3] != 0) {
+		std::cerr << "\n Client Session wrong place to modbus Message";
+		read_full_message(self);
+		return;
+	}
         uint16_t pdu_len  = lamda(header);
         //	    std::cout << pdu_len <<std::endl;
         request_count++;
@@ -74,7 +79,10 @@ void ClientSession::send_to_client(std::shared_ptr<ClientSession> self, std::vec
 
     boost::asio::async_write(client_sock_, boost::asio::buffer(response),
         [this, self](boost::system::error_code ec, size_t){
-            if (!ec) read_full_message(self);
+            if (!ec) {read_full_message(self);
+	    } else {
+	    	handle_error(ec);
+	    }
         });
 }
 
